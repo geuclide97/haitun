@@ -1,0 +1,38 @@
+name: Sync zjys9 config
+
+on:
+  schedule:
+    # 每 12 小时重新生成一次配置（UTC 时间，错开 zjys9-py 自身的同步）
+    - cron: "30 */12 * * *"
+  workflow_dispatch: {}
+  repository_dispatch:
+    types: [zjys9-updated]
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Install deps
+        run: pip install requests
+
+      - name: Generate config
+        run: python gen_zjys9.py
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Commit changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "sync: 更新 zjys9 配置"
+          commit_author: "github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>"
