@@ -20,10 +20,6 @@ SRC_REPO = "geuclide97/zjys9-py"
 SRC_BRANCH = "main"
 RAW_BASE = f"https://raw.githubusercontent.com/{SRC_REPO}/{SRC_BRANCH}/"
 
-# 本仓库的 python 版 spider jar（haitun 仓库根目录）
-SPIDER_JAR = "https://raw.githubusercontent.com/geuclide97/haitun/main/9527.jar"
-WALLPAPER = "http://tool.teyonds.com/api"
-
 OUT_NAME = "zjys9.json"
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -76,9 +72,9 @@ def main():
     items = fetch_files()
     sites = build_sites(items)
 
+    # 纯 .py/.js 源靠客户端内置引擎加载，不需要顶层 spider jar 和 wallpaper，
+    # 精简配置以加快启动（省去 2MB jar 和壁纸请求）
     config = {
-        "spider": SPIDER_JAR,
-        "wallpaper": WALLPAPER,
         "sites": sites,
     }
 
