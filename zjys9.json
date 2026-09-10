@@ -298,15 +298,6 @@
       "filterable": 1
     },
     {
-      "key": "臻彩4k",
-      "name": "🐬臻彩4k.py",
-      "type": 3,
-      "api": "https://raw.githubusercontent.com/geuclide97/zjys9-py/main/%E8%87%BB%E5%BD%A94k.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1
-    },
-    {
       "key": "芒果TV",
       "name": "🐬芒果TV.py",
       "type": 3,
