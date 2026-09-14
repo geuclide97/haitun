@@ -162,9 +162,9 @@ def _msg(v):
     return parse_message(v) if isinstance(v, bytes) else {}
 
 
-# ===============
+# ============================================================
 # 二、加密原语（f() / b() / a() / i()）
-# ===============
+# ============================================================
 _RAND_CHARS = "1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 
 
@@ -466,6 +466,7 @@ class _Client:
 # 七、Spider（TVBox python 版接口）
 # ============================================================
 class Spider(_BaseSpider):
+
     def __init__(self):
         self.cfg = dict(DEFAULT_CONFIG)
         self.client = _Client(self.cfg)
