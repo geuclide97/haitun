@@ -457,11 +457,39 @@ class Spider(BaseSpider):
                         separators=(',', ':')).encode()).decode()
                 lines[line].append('%s$%s' % (title or '正片', ep_url))
             def _rank(nm):
-                if '超高清' in nm:
+                # ============================================================
+                # 线路优先级排序（优化版）— 快的在前，慢的在后
+                # 依据：用户实测「自建4K-3」最快 + HTTP 测速结果
+                #   自建CDN > 直链平台(爱奇艺/腾讯/优酷) > 稳定CDN > 小众CDN > 超时/无效
+                # ============================================================
+                # Priority 0: 自建4K-3（用户确认最快）
+                if '自建4K-3' in nm:
                     return 0
-                if '蓝光' in nm:
-                    return 1
-                return 2
+                # Priority 1: 其余自建CDN
+                for p in ('自建4K-2', '自建4K', '自建蓝光', '自营蓝光-1'):
+                    if p in nm:
+                        return 1
+                # Priority 2: 直链平台（无CDN代理，爱奇艺实测303ms）
+                for p in ('爱奇艺', 'QQ', 'YK', '腾讯视频', '优酷'):
+                    if p in nm:
+                        return 2
+                # Priority 3: 稳定第三方CDN
+                for p in ('C蓝光', 'NS蓝光', 'VIP蓝光', '神话蓝光'):
+                    if p in nm:
+                        return 3
+                # Priority 4: 一般/优质CDN
+                for p in ('JD4K', 'JD-', '臻彩蓝光', 'IMDB'):
+                    if p in nm:
+                        return 4
+                # Priority 5: 较慢CDN
+                for p in ('FY蓝光', 'QS蓝光', 'FY', 'QS'):
+                    if p in nm:
+                        return 5
+                # Priority 99: 已知超时/无效 -> 移到最后（B蓝光=fengbao10确认404超时）
+                for p in ('B蓝光',):
+                    if p in nm:
+                        return 99
+                return 6
             order.sort(key=lambda x: (_rank(x), x))
             if lines:
                 out['vod_play_from'] = '$$$'.join(order)
