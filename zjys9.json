@@ -55,6 +55,15 @@
       "filterable": 1
     },
     {
+      "key": "bili少儿",
+      "name": "🐬bili少儿.py",
+      "type": 3,
+      "api": "https://raw.githubusercontent.com/geuclide97/zjys9-py/main/bili%E5%B0%91%E5%84%BF.py",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1
+    },
+    {
       "key": "bubu",
       "name": "🐬bubu.py",
       "type": 3,
