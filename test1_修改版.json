@@ -293,11 +293,11 @@
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 0
-    },
+    }
+  ],
+  "lives": [
     {
-      "key": "live_merge",
       "name": "全能聚合直播",
-      "type": 1,
       "api": "https://raw.githubusercontent.com/geuclide97/haitun/main/live_merge.py",
       "ext": {
         "lives_urls": [
@@ -309,9 +309,7 @@
         ],
         "重复阈值": 2
       }
-    }
-  ],
-  "lives": [
+    },
     {
       "name": "IPTV直播",
       "type": 0,
