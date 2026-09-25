@@ -300,12 +300,27 @@
       "name": "全能聚合直播",
       "api": "https://raw.githubusercontent.com/geuclide97/haitun/main/live_merge.py",
       "ext": {
-        "lives_urls": [
-          "https://cdn.jsdelivr.net/gh/Guovin/iptv-api@gd/output/result.m3u",
-          "https://cdn.jsdelivr.net/gh/dkane027/fleung49@main/mit",
-          "https://raw.githubusercontent.com/stevenrop/live1/refs/heads/main/live.txt",
-          "https://raw.githubusercontent.com/stevenrop/live1/refs/heads/main/57.txt",
-          "https://raw.githubusercontent.com/fleung49/star/refs/heads/main/meta"
+        "lives": [
+          {
+            "name": "IPTV直播",
+            "url": "https://cdn.jsdelivr.net/gh/Guovin/iptv-api@gd/output/result.m3u"
+          },
+          {
+            "name": "fleung49·mit",
+            "url": "https://cdn.jsdelivr.net/gh/dkane027/fleung49@main/mit"
+          },
+          {
+            "name": "live1·live",
+            "url": "https://raw.githubusercontent.com/stevenrop/live1/refs/heads/main/live.txt"
+          },
+          {
+            "name": "live1·57",
+            "url": "https://raw.githubusercontent.com/stevenrop/live1/refs/heads/main/57.txt"
+          },
+          {
+            "name": "fleung49·meta",
+            "url": "https://raw.githubusercontent.com/fleung49/star/refs/heads/main/meta"
+          }
         ],
         "重复阈值": 2
       }
