@@ -297,40 +297,26 @@
   ],
   "lives": [
     {
-      "name": "直播合并pro",
+      "name": "直播合并",
       "api": "https://raw.githubusercontent.com/geuclide97/haitun/main/live_merge.py",
       "ext": {
-        "包含关键词": [
-          "央视",
-          "卫视",
-          "新闻"
+        "exclude_keywords": [
+          "猫TV影视",
+          "抖舞陪看",
+          "白嫖软件",
+          "免费观看"
         ],
-        "排除关键词": [
-          "测试",
-          "无效",
-          "虎牙",
-          "斗鱼",
-          "b站",
-          "轮播"
+        "match_fields": [
+          "name",
+          "group"
         ],
-        "重复阈值": 3,
+        "dedup_count": 3,
         "lives": [
           {
-            "name": "央视频",
-            "type": 3,
-            "api": "https://000.hfr1107.top/lz/py/live_ysp.py"
-          },
-          {
-            "name": "油管直播",
-            "type": 3,
-            "api": "https://000.hfr1107.top/lz/py/ytbzb.py",
-            "ext": {
-              "channels": "https://000.hfr1107.top/lz/json/油管直播.txt"
-            }
+            "name": "☀️日后TV",
+            "proxy": "noproxy",
+            "url": "http://rihou.cc:555/gggg.nzk"
           }
-        ],
-        "lives_urls": [
-          "http://tvbox.王二小放牛娃.top"
         ]
       }
     },
