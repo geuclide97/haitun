@@ -297,32 +297,41 @@
   ],
   "lives": [
     {
-      "name": "全能聚合直播",
+      "name": "直播合并pro",
       "api": "https://raw.githubusercontent.com/geuclide97/haitun/main/live_merge.py",
       "ext": {
+        "包含关键词": [
+          "央视",
+          "卫视",
+          "新闻"
+        ],
+        "排除关键词": [
+          "测试",
+          "无效",
+          "虎牙",
+          "斗鱼",
+          "b站",
+          "轮播"
+        ],
+        "重复阈值": 3,
         "lives": [
           {
-            "name": "IPTV直播",
-            "url": "https://cdn.jsdelivr.net/gh/Guovin/iptv-api@gd/output/result.m3u"
+            "name": "央视频",
+            "type": 3,
+            "api": "https://000.hfr1107.top/lz/py/live_ysp.py"
           },
           {
-            "name": "fleung49·mit",
-            "url": "https://cdn.jsdelivr.net/gh/dkane027/fleung49@main/mit"
-          },
-          {
-            "name": "live1·live",
-            "url": "https://raw.githubusercontent.com/stevenrop/live1/refs/heads/main/live.txt"
-          },
-          {
-            "name": "live1·57",
-            "url": "https://raw.githubusercontent.com/stevenrop/live1/refs/heads/main/57.txt"
-          },
-          {
-            "name": "fleung49·meta",
-            "url": "https://raw.githubusercontent.com/fleung49/star/refs/heads/main/meta"
+            "name": "油管直播",
+            "type": 3,
+            "api": "https://000.hfr1107.top/lz/py/ytbzb.py",
+            "ext": {
+              "channels": "https://000.hfr1107.top/lz/json/油管直播.txt"
+            }
           }
         ],
-        "重复阈值": 2
+        "lives_urls": [
+          "http://tvbox.王二小放牛娃.top"
+        ]
       }
     },
     {
