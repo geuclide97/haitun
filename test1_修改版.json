@@ -298,23 +298,7 @@
   "lives": [
     {
       "name": "直播合并",
-      "api": "https://raw.githubusercontent.com/geuclide97/haitun/main/live_merge.py",
-      "ext": {
-        "exclude_keywords": [
-          "猫TV影视",
-          "抖舞陪看",
-          "白嫖软件",
-          "免费观看"
-        ],
-        "match_fields": [
-          "name",
-          "group"
-        ],
-        "dedup_count": 3,
-        "lives_urls": [
-          "https://tvbox.moliys.icu/tvbox/%E6%B5%B7%E9%87%8F%E7%9B%B4%E6%92%AD%E7%BA%BF%E8%B7%AF.json"
-        ]
-      }
+      "url": "https://raw.githubusercontent.com/geuclide97/haitun/main/moliys_live.m3u"
     },
     {
       "name": "IPTV直播",
