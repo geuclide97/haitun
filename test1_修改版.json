@@ -311,12 +311,8 @@
           "group"
         ],
         "dedup_count": 3,
-        "lives": [
-          {
-            "name": "☀️日后TV",
-            "proxy": "noproxy",
-            "url": "http://rihou.cc:555/gggg.nzk"
-          }
+        "lives_urls": [
+          "https://tvbox.moliys.icu/tvbox/%E6%B5%B7%E9%87%8F%E7%9B%B4%E6%92%AD%E7%BA%BF%E8%B7%AF.json"
         ]
       }
     },

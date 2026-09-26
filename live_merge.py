@@ -1046,7 +1046,7 @@ class Spider(BaseSpider):
     # ==================== 生成播放列表 ====================
     def liveContent(self, url):
         lines = ['#EXTM3U']
-        placeholder_name = "↓↓↓↓↓↓"
+        placeholder_name = "────────"
         placeholder_url = "http://127.0.0.1:9978/proxy?do=py&fun=placeholder"
 
         with self._lock:
