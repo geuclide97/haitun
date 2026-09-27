@@ -27,6 +27,20 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 # 排除这些文件（非爬虫源）
 EXCLUDE = {"sync.py", "gen_zjys9.py"}
 
+# 额外附加的源（不在 zjys9-py 仓库，单独维护在 haitun 仓库）
+# 生成 zjys9.json 时合并到末尾，不会被 zjys9-py 的同步删除逻辑影响
+EXTRA_SITES = [
+    {
+        "key": "聚合影视",
+        "name": "🐬聚合影视.py",
+        "type": 3,
+        "api": "https://raw.githubusercontent.com/geuclide97/haitun/main/%E8%81%9A%E5%90%88%E5%BD%B1%E8%A7%86.py",
+        "searchable": 1,
+        "quickSearch": 1,
+        "filterable": 1,
+    },
+]
+
 
 def fetch_files():
     headers = {"User-Agent": "gen-zjys9", "Accept": "application/vnd.github+json"}
@@ -71,6 +85,7 @@ def build_sites(items):
 def main():
     items = fetch_files()
     sites = build_sites(items)
+    sites = sites + EXTRA_SITES  # 附加 haitun 仓库维护的额外源
 
     # 纯 .py/.js 源靠客户端内置引擎加载，不需要顶层 spider jar 和 wallpaper，
     # 精简配置以加快启动（省去 2MB jar 和壁纸请求）

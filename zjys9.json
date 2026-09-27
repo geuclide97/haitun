@@ -1,6 +1,15 @@
 {
   "sites": [
     {
+      "key": "1234影视",
+      "name": "🐬1234影视.py",
+      "type": 3,
+      "api": "https://raw.githubusercontent.com/geuclide97/zjys9-py/main/1234%E5%BD%B1%E8%A7%86.py",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1
+    },
+    {
       "key": "AppToV5",
       "name": "🐬AppToV5.py",
       "type": 3,
@@ -316,10 +325,28 @@
       "filterable": 1
     },
     {
+      "key": "看剧AI19",
+      "name": "🐬看剧AI19.py",
+      "type": 3,
+      "api": "https://raw.githubusercontent.com/geuclide97/zjys9-py/main/%E7%9C%8B%E5%89%A7AI19.py",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1
+    },
+    {
       "key": "短剧聚合",
       "name": "🐬短剧聚合.py",
       "type": 3,
       "api": "https://raw.githubusercontent.com/geuclide97/zjys9-py/main/%E7%9F%AD%E5%89%A7%E8%81%9A%E5%90%88.py",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1
+    },
+    {
+      "key": "红果短剧",
+      "name": "🐬红果短剧.py",
+      "type": 3,
+      "api": "https://raw.githubusercontent.com/geuclide97/zjys9-py/main/%E7%BA%A2%E6%9E%9C%E7%9F%AD%E5%89%A7.py",
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 1
@@ -419,6 +446,15 @@
       "name": "🐬金牌影院.js",
       "type": 3,
       "api": "https://raw.githubusercontent.com/geuclide97/zjys9-py/main/%E9%87%91%E7%89%8C%E5%BD%B1%E9%99%A2.js",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1
+    },
+    {
+      "key": "聚合影视",
+      "name": "🐬聚合影视.py",
+      "type": 3,
+      "api": "https://raw.githubusercontent.com/geuclide97/haitun/main/%E8%81%9A%E5%90%88%E5%BD%B1%E8%A7%86.py",
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 1
