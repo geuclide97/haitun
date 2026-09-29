@@ -131,16 +131,15 @@ class Spider(Spider):
         return {'list': video_list, 'parse': 0, 'jx': 0}
 
     def _episode_urls(self, vid, nid):
-        """返回播放地址列表，按【高清720→蓝光1080→标清480】排序。
-        标清480 是 HEVC 编码（部分 TVBox 盒子解码失败），故排最后；
-        高清/蓝光为 H.264，兼容性最好，默认选高清（分片比蓝光小，快进更顺）。"""
+        """返回播放地址列表，按【蓝光1080→高清720→标清480】排序。
+        蓝光/高清为 H.264（兼容好），标清 480 是 HEVC（部分 TVBox 盒子解码失败）故排最后。"""
         try:
             r = self._api('/api/mw-movie/anonymous/v2/video/episode/url', [('id', vid), ('nid', nid)])
             lst = (r.get('data') or {}).get('list') or []
             by_res = {}
             for x in lst:
                 by_res[int(x.get('resolution') or 0)] = x.get('url', '')
-            order = [720, 1080, 480]
+            order = [1080, 720, 480]
             return [by_res[r] for r in order if by_res.get(r)]
         except:
             pass
@@ -155,8 +154,8 @@ class Spider(Spider):
                 return {'list': []}
             vod_name = data.get('vodName', '')
             play_list = data.get('episodeList') or []
-            # 多线路：高清(默认, H.264 兼容好)/蓝光(H.264 高画质)/标清(HEVC, 部分盒子不支持放最后)
-            line_names = ['高清', '蓝光', '标清']
+            # 多线路：蓝光(默认, H.264 1080 高画质)/高清(H.264 720)/标清(HEVC, 部分盒子不支持放最后)
+            line_names = ['蓝光', '高清', '标清']
             groups = []
             for line_idx in range(len(line_names)):
                 eps = []
