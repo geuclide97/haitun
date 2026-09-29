@@ -134,11 +134,9 @@ class Spider(Spider):
         try:
             r = self._api('/api/mw-movie/anonymous/v2/video/episode/url', [('id', vid), ('nid', nid)])
             lst = (r.get('data') or {}).get('list') or []
-            # 优先免费线路（needLogin=False），再按分辨率降序
-            free = [x for x in lst if not x.get('needLogin')]
-            pool = free or lst
+            # 选最高分辨率（needLogin 只是前端标记，m3u8 直链实测无需登录即可播放）
             best = None
-            for x in pool:
+            for x in lst:
                 if best is None or int(x.get('resolution') or 0) > int(best.get('resolution') or 0):
                     best = x
             if best:
