@@ -220,11 +220,10 @@
       "key": "JinPai",
       "name": "🏅┃金牌┃影院",
       "type": 3,
-      "api": "csp_Jinpai",
+      "api": "https://raw.githubusercontent.com/geuclide97/zjys9-py/refs/heads/main/jys.js",
       "searchable": 1,
       "quickSearch": 1,
-      "filterable": 1,
-      "jar": "https://ncstatic.clewm.net/rsrc/2026/0508/10/56d0b667615145949789418bff9f22a5.png;md5;B63A0EB8852BB7AB06500C424CCC3DAE"
+      "filterable": 1
     },
     {
       "key": "kanjuai.py",
