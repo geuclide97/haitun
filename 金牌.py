@@ -130,20 +130,16 @@ class Spider(Spider):
             return {'list': [], 'parse': 0, 'jx': 0}
         return {'list': video_list, 'parse': 0, 'jx': 0}
 
-    def _episode_url(self, vid, nid):
+    def _episode_urls(self, vid, nid):
+        """返回所有线路的播放地址（按分辨率升序：标清→高清→蓝光）。"""
         try:
             r = self._api('/api/mw-movie/anonymous/v2/video/episode/url', [('id', vid), ('nid', nid)])
             lst = (r.get('data') or {}).get('list') or []
-            # 选最高分辨率（needLogin 只是前端标记，m3u8 直链实测无需登录即可播放）
-            best = None
-            for x in lst:
-                if best is None or int(x.get('resolution') or 0) > int(best.get('resolution') or 0):
-                    best = x
-            if best:
-                return best.get('url', '')
+            lst = sorted(lst, key=lambda x: int(x.get('resolution') or 0))
+            return [x.get('url', '') for x in lst if x.get('url')]
         except:
             pass
-        return ''
+        return []
 
     def detailContent(self, did):
         ids = did[0]
@@ -154,13 +150,17 @@ class Spider(Spider):
                 return {'list': []}
             vod_name = data.get('vodName', '')
             play_list = data.get('episodeList') or []
-            # 延迟加载：只传 vid|nid 标识，播放时再实时取播放地址
-            vod_play_url = []
-            for i in play_list:
-                name = i.get('name', '') or vod_name
-                nid = i.get('nid', '')
-                if nid:
-                    vod_play_url.append(str(name) + '$' + str(ids) + '|' + str(nid))
+            # 多线路：标清(默认快)/高清/蓝光，延迟加载（播放时再实时取地址）
+            line_names = ['标清', '高清', '蓝光']
+            groups = []
+            for line_idx in range(len(line_names)):
+                eps = []
+                for i in play_list:
+                    name = i.get('name', '') or vod_name
+                    nid = i.get('nid', '')
+                    if nid:
+                        eps.append('%s$%s|%s|%d' % (name, str(ids), str(nid), line_idx))
+                groups.append('#'.join(eps))
             video_list = [{
                 'type_name': data.get('typeName', ''),
                 'vod_id': str(ids),
@@ -172,8 +172,8 @@ class Spider(Spider):
                 'vod_director': data.get('vodDirector', ''),
                 'vod_content': re.sub(r'<[^>]+>', '', data.get('vodContent') or '').strip(),
                 'vod_remarks': data.get('vodRemarks', ''),
-                'vod_play_from': '金牌播放器',
-                'vod_play_url': '#'.join(vod_play_url),
+                'vod_play_from': '$$$'.join(line_names),
+                'vod_play_url': '$$$'.join(groups),
             }]
             return {'list': video_list, 'parse': 0, 'jx': 0}
         except:
@@ -220,24 +220,27 @@ class Spider(Spider):
 
     def playerContent(self, flag, pid, vipFlags):
         pid = str(pid or '')
-        # 新格式：vid|nid（详情页延迟加载，播放时实时取地址）
+        # 新格式：vid|nid|线路索引（详情页多线路延迟加载，播放时实时取地址）
         if '|' in pid and not pid.startswith('http'):
             parts = pid.split('|')
-            if len(parts) == 2:
-                vid = parts[0].strip()
-                nid = parts[1].strip()
-                url = self._episode_url(vid, nid)
-                if url:
-                    h = {
-                        'User-Agent': self.ua,
-                        'Referer': self.home_url + '/',
-                    }
-                    if '.m3u8' in url:
-                        h['Origin'] = self.home_url
-                        h['Sec-Fetch-Dest'] = 'empty'
-                        h['Sec-Fetch-Mode'] = 'cors'
-                        h['Sec-Fetch-Site'] = 'cross-site'
-                    return {'url': url, 'header': h, 'parse': 0, 'jx': 0}
+            vid = parts[0].strip()
+            nid = parts[1].strip()
+            line_idx = int(parts[2].strip()) if len(parts) > 2 and parts[2].strip().isdigit() else 0
+            urls = self._episode_urls(vid, nid)
+            url = ''
+            if urls:
+                url = urls[line_idx] if line_idx < len(urls) else urls[-1]
+            if url:
+                h = {
+                    'User-Agent': self.ua,
+                    'Referer': self.home_url + '/',
+                }
+                if '.m3u8' in url:
+                    h['Origin'] = self.home_url
+                    h['Sec-Fetch-Dest'] = 'empty'
+                    h['Sec-Fetch-Mode'] = 'cors'
+                    h['Sec-Fetch-Site'] = 'cross-site'
+                return {'url': url, 'header': h, 'parse': 0, 'jx': 0}
         # 旧格式：完整 m3u8 URL（兼容）
         play_url = pid.split('&vodName=')[0].replace(' ', '%20').replace('"', '%22')
         h = {
