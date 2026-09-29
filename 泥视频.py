@@ -18,6 +18,7 @@
 
 import json
 import re
+import threading
 from urllib.parse import quote, urljoin
 
 try:
@@ -205,27 +206,50 @@ class Spider(BaseSpider):
                 node = soup.select_one("#" + id_)
                 return self._text(node) if node else ""
 
-            # 剧集链接
+            # 剧集链接（电视剧 epN / 综艺日期，统一处理）
             episodes = []
             seen = set()
             for a in soup.select('a[href*="/vodplay/"]'):
                 href = a.get("href", "")
                 if "/vodplay/" not in href:
                     continue
-                label = self._text(a)
-                if not label or not re.match(r"^第\d+集$", label):
+                label = self._text(a).strip()
+                if not label:
                     continue
-                if href in seen:
+                # 跳过“立即播放”按钮（文本恰好是“播放”等）
+                if label in ("播放", "立即播放", "开始播放", "立即观看"):
                     continue
-                seen.add(href)
-                episodes.append((href, label))
+                clean = href.split("#")[0]
+                # 跳过电影线路（/vodplay/{id}/v）
+                if re.search(r"/v$", clean):
+                    continue
+                if clean in seen:
+                    continue
+                seen.add(clean)
+                episodes.append((clean, label))
 
-            def ep_num(item):
+            # 若有日期格式剧集（综艺），按最新在前排；否则（电视剧）按集数升序
+            has_date = any(
+                re.search(r"/\d{8}$", h) for h, _ in episodes
+            )
+
+            def ep_sort(item):
                 mm = re.search(r"/ep(\d+)$", item[0])
-                return int(mm.group(1)) if mm else 0
+                dd = re.search(r"/(\d{8})$", item[0])
+                if has_date:
+                    # 综艺：日期/集数统一降序（最新一期在前）
+                    if dd:
+                        return -int(dd.group(1))
+                    if mm:
+                        return -int(mm.group(1))
+                    return 0
+                # 电视剧：按集数升序（第01集在前）
+                if mm:
+                    return int(mm.group(1))
+                return 0
 
-            # HTML 中剧集倒序（最新在前），按集数升序排列
-            episodes.sort(key=ep_num)
+            # HTML 中剧集倒序，重排：电视剧正序、综艺最新在前
+            episodes.sort(key=ep_sort)
 
             if episodes:
                 play_url = "#".join(
@@ -273,17 +297,22 @@ class Spider(BaseSpider):
 
             obj = json.loads(self._get(api, referer=page_url))
 
+            urls = []
             for p in obj.get("pdatas", []) if isinstance(obj, dict) else []:
-                url = str(p.get("playurl", "") or "").strip()
-                if url:
-                    return {
-                        "parse": 0,
-                        "playUrl": "",
-                        "url": url,
-                        "header": {"User-Agent": self.headers["User-Agent"]},
-                    }
+                u = str(p.get("playurl", "") or "").strip()
+                if u:
+                    urls.append(u)
 
-            return {"parse": 1, "playUrl": "", "url": page_url}
+            if not urls:
+                return {"parse": 1, "playUrl": "", "url": page_url}
+
+            best = self._pick_playable(urls)
+            return {
+                "parse": 0,
+                "playUrl": "",
+                "url": best,
+                "header": {"User-Agent": self.headers["User-Agent"]},
+            }
         except Exception as exc:
             return {
                 "parse": 1,
@@ -291,6 +320,85 @@ class Spider(BaseSpider):
                 "url": str(id or ""),
                 "error": str(exc),
             }
+
+    def _pick_playable(self, urls):
+        """并发探测所有线路，优先返回可用的多码率 master playlist，
+        跳过 403/超时/非标准端口的坏线路。
+        """
+        if not urls:
+            return ""
+        if len(urls) == 1:
+            return urls[0]
+
+        results = {}
+        lock = threading.Lock()
+        master_done = threading.Event()
+
+        def probe(u):
+            kind = self._m3u8_kind(u)
+            if kind:
+                with lock:
+                    results.setdefault(kind, []).append(u)
+            if kind == "master":
+                master_done.set()
+
+        threads = [threading.Thread(target=probe, args=(u,)) for u in urls]
+        for t in threads:
+            t.daemon = True
+            t.start()
+
+        # 优先等 master（最多 4s），有就尽快返回
+        master_done.wait(4)
+        if results.get("master"):
+            return results["master"][0]
+        # 无 master：等 ts 线程收尾，再验证首分片
+        for t in threads:
+            t.join(2)
+
+        for u in results.get("ts", []):
+            if self._ts_playable(u):
+                return u
+        if results.get("ts"):
+            return results["ts"][0]
+        return urls[0]
+
+    def _m3u8_kind(self, url):
+        """判断 m3u8 类型：master（多码率）/ ts（直接分片）/ None（无效）。"""
+        try:
+            r = self.session.get(url, timeout=5, headers=self.headers)
+            if r.status_code != 200:
+                return None
+            text = r.text
+            if "#EXTM3U" not in text:
+                return None
+            if "#EXT-X-STREAM-INF" in text:
+                return "master"
+            return "ts"
+        except Exception:
+            return None
+
+    def _ts_playable(self, url):
+        """验证直接 ts 列表的首分片确实能下到数据（过滤非标准端口/403）。"""
+        try:
+            r = self.session.get(url, timeout=5, headers=self.headers)
+            text = r.text
+            if "#EXTM3U" not in text:
+                return False
+            seg = re.search(r"\n(https?://[^\s]+)", text)
+            if not seg:
+                return True
+            seg_url = seg.group(1).strip()
+            r2 = self.session.get(
+                seg_url, timeout=4, stream=True, headers=self.headers)
+            got = 0
+            for chunk in r2.iter_content(16384):
+                got += len(chunk)
+                if got >= 65536:
+                    break
+            r2.close()
+            return got >= 8192
+        except Exception:
+            return False
 
     def isVideoFormat(self, url):
         return bool(re.search(
