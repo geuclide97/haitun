@@ -1,0 +1,362 @@
+{
+  "cctv1": {
+    "name": "CCTV-1 綜合",
+    "path": "cctv1",
+    "url": "https://p-drm.aliiptv.com/live/cctv1.m3u8"
+  },
+  "cctv2": {
+    "name": "CCTV-2 财经",
+    "path": "cctv2",
+    "url": "https://p-drm.aliiptv.com/live/cctv2.m3u8"
+  },
+  "cctv3": {
+    "name": "CCTV-3 综艺",
+    "path": "cctv3",
+    "url": "https://p-drm.aliiptv.com/live/cctv3.m3u8"
+  },
+  "cctv4": {
+    "name": "CCTV-4 中文国际",
+    "path": "cctv4",
+    "url": "https://p-drm.aliiptv.com/live/cctv4.m3u8"
+  },
+  "cctv5": {
+    "name": "CCTV-5 体育",
+    "path": "cctv5",
+    "url": "https://p-drm.aliiptv.com/live/cctv5.m3u8"
+  },
+  "cctv6": {
+    "name": "CCTV-6 电影",
+    "path": "cctv6",
+    "url": "https://p-drm.aliiptv.com/live/cctv6.m3u8"
+  },
+  "cctv7": {
+    "name": "CCTV-7 国防军事",
+    "path": "cctv7",
+    "url": "https://p-drm.aliiptv.com/live/cctv7.m3u8"
+  },
+  "cctv8": {
+    "name": "CCTV-8 电视剧",
+    "path": "cctv8",
+    "url": "https://p-drm.aliiptv.com/live/cctv8.m3u8"
+  },
+  "cctv9": {
+    "name": "CCTV-9 纪录",
+    "path": "cctv9",
+    "url": "https://p-drm.aliiptv.com/live/cctv9.m3u8"
+  },
+  "cctv10": {
+    "name": "CCTV-10 科教",
+    "path": "cctv10",
+    "url": "https://p-drm.aliiptv.com/live/cctv10.m3u8"
+  },
+  "cctv11": {
+    "name": "CCTV-11 戏曲",
+    "path": "cctv11",
+    "url": "https://p-drm.aliiptv.com/live/cctv11.m3u8"
+  },
+  "cctv12": {
+    "name": "CCTV-12 社会与法",
+    "path": "cctv12",
+    "url": "https://p-drm.aliiptv.com/live/cctv12.m3u8"
+  },
+  "cctv13": {
+    "name": "CCTV-13 新闻",
+    "path": "cctv13",
+    "url": "https://p-drm.aliiptv.com/live/cctv13.m3u8"
+  },
+  "cctv14": {
+    "name": "CCTV-14 少儿",
+    "path": "cctv14",
+    "url": "https://p-drm.aliiptv.com/live/cctv14.m3u8"
+  },
+  "cctv15": {
+    "name": "CCTV-15 音乐",
+    "path": "cctv15",
+    "url": "https://p-drm.aliiptv.com/live/cctv15.m3u8"
+  },
+  "cctv16": {
+    "name": "CCTV-16 奥林匹克",
+    "path": "cctv16",
+    "url": "https://p-drm.aliiptv.com/live/cctv16.m3u8"
+  },
+  "cctv17": {
+    "name": "CCTV-17 农业",
+    "path": "cctv17",
+    "url": "https://p-drm.aliiptv.com/live/cctv17.m3u8"
+  },
+  "jade": {
+    "name": "TVB 翡翠台",
+    "path": "jade",
+    "url": "https://p-drm.aliiptv.com/live/jade.m3u8"
+  },
+  "tvbxinghe": {
+    "name": "TVB 星河",
+    "path": "tvbxinghe",
+    "url": "https://play-drm.aliiptv.com/live/tvbxinghe.m3u8"
+  },
+  "channel8": {
+    "name": "新加坡8频道",
+    "path": "channel8",
+    "url": "https://p-drm.aliiptv.com/live/channel8.m3u8"
+  },
+  "channelu": {
+    "name": "CHANNEL U",
+    "path": "channelu",
+    "url": "https://p-drm.aliiptv.com/live/channelu.m3u8"
+  },
+  "channelnewsasia": {
+    "name": "新加坡亚洲新闻",
+    "path": "channelnewsasia",
+    "url": "https://p-drm.aliiptv.com/live/channelnewsasia.m3u8"
+  },
+  "zhejiang": {
+    "name": "浙江卫视",
+    "path": "zhejiang",
+    "url": "https://p-drm.aliiptv.com/live/zhejiang.m3u8"
+  },
+  "Discovery": {
+    "name": "Discovery 探索",
+    "path": "Discovery",
+    "url": "https://p-drm.aliiptv.com/live/Discovery.m3u8"
+  },
+  "hunan": {
+    "name": "湖南卫视",
+    "path": "hunan",
+    "url": "https://p-drm.aliiptv.com/live/hunan.m3u8"
+  },
+  "tvbPlus": {
+    "name": "TVB Plus",
+    "path": "tvbPlus",
+    "url": "https://p-drm.aliiptv.com/live/tvbPlus.m3u8"
+  },
+  "tvbPearl": {
+    "name": "TVB明珠台",
+    "path": "tvbPearl",
+    "url": "https://p-drm.aliiptv.com/live/tvbPearl.m3u8"
+  },
+  "tvbNews": {
+    "name": "TVB无线新闻",
+    "path": "tvbNews",
+    "url": "https://p-drm.aliiptv.com/live/tvbNews.m3u8"
+  },
+  "ViuTV": {
+    "name": "Viu TV",
+    "path": "ViuTV",
+    "url": "https://p-drm.aliiptv.com/live/ViuTV.m3u8"
+  },
+  "ViuTVsix": {
+    "name": "ViuTV six",
+    "path": "ViuTVsix",
+    "url": "https://p-drm.aliiptv.com/live/ViuTVsix.m3u8"
+  },
+  "rthktv31": {
+    "name": "港台电视31",
+    "path": "rthktv31",
+    "url": "https://p-drm.aliiptv.com/live/rthktv31.m3u8"
+  },
+  "rthktv32": {
+    "name": "港台电视32",
+    "path": "rthktv32",
+    "url": "https://p-drm.aliiptv.com/live/rthktv32.m3u8"
+  },
+  "jiangsu": {
+    "name": "江苏卫视",
+    "path": "jiangsu",
+    "url": "https://p-drm.aliiptv.com/live/jiangsu.m3u8"
+  },
+  "dongfang": {
+    "name": "东方卫视",
+    "path": "dongfang",
+    "url": "https://p-drm.aliiptv.com/live/dongfang.m3u8"
+  },
+  "chchd": {
+    "name": "CHC影迷电影",
+    "path": "chchd",
+    "url": "https://play-drm.aliiptv.com/live/chchd.m3u8"
+  },
+  "chcaction": {
+    "name": "CHC动作电影",
+    "path": "chcaction",
+    "url": "https://play-drm.aliiptv.com/live/chcaction.m3u8"
+  },
+  "CHCHomeTheater": {
+    "name": "CHC家庭影院",
+    "path": "CHCHomeTheater",
+    "url": "https://play-drm.aliiptv.com/live/CHCHomeTheater.m3u8"
+  },
+  "HDPhxChinese": {
+    "name": "凤凰卫视中文台",
+    "path": "HDPhxChinese",
+    "url": "https://play-drm.aliiptv.com/live/HDPhxChinese.m3u8"
+  },
+  "HDPhxInfonews": {
+    "name": "凤凰卫视资讯台",
+    "path": "HDPhxInfonews",
+    "url": "https://play-drm.aliiptv.com/live/HDPhxInfonews.m3u8"
+  },
+  "HDPhxHK": {
+    "name": "凤凰卫视香港台",
+    "path": "HDPhxHK",
+    "url": "https://play-drm.aliiptv.com/live/HDPhxHK.m3u8"
+  },
+  "MeiAhMovieChannel": {
+    "name": "美亞電影台",
+    "path": "MeiAhMovieChannel",
+    "url": "https://play-drm.aliiptv.com/live/MeiAhMovieChannel.m3u8"
+  },
+  "CelestialClassicMovies": {
+    "name": "天映經典頻道",
+    "path": "CelestialClassicMovies",
+    "url": "https://play-drm.aliiptv.com/live/CelestialClassicMovies.m3u8"
+  },
+  "HBOHD": {
+    "name": "HBO HD",
+    "path": "HBOHD",
+    "url": "https://play-drm.aliiptv.com/live/HBOHD.m3u8"
+  },
+  "HBOfamilyHD": {
+    "name": "HBO 家庭影院",
+    "path": "HBOfamilyHD",
+    "url": "https://play-drm.aliiptv.com/live/HBOfamilyHD.m3u8"
+  },
+  "HBOHitsHD": {
+    "name": "HBO 强档影院",
+    "path": "HBOHitsHD",
+    "url": "https://play-drm.aliiptv.com/live/HBOHitsHD.m3u8"
+  },
+  "HBOSignature": {
+    "name": "HBO 原创影院",
+    "path": "HBOSignature",
+    "url": "https://play-drm.aliiptv.com/live/HBOSignature.m3u8"
+  },
+  "cinep": {
+    "name": "私人影院",
+    "path": "cinep",
+    "url": "https://play-drm.aliiptv.com/live/cinep.m3u8"
+  },
+  "dsyp": {
+    "name": "東森洋片",
+    "path": "dsyp",
+    "url": "https://play-drm.aliiptv.com/live/dsyp.m3u8"
+  },
+  "dsdy": {
+    "name": "東森电影",
+    "path": "dsdy",
+    "url": "https://play-drm.aliiptv.com/live/dsdy.m3u8"
+  },
+  "dsxj": {
+    "name": "東森戲劇",
+    "path": "dsxj",
+    "url": "https://play-drm.aliiptv.com/live/dsxj.m3u8"
+  },
+  "dszh": {
+    "name": "東森综合",
+    "path": "dszh",
+    "url": "https://play-drm.aliiptv.com/live/dszh.m3u8"
+  },
+  "dsyy": {
+    "name": "東森幼幼",
+    "path": "dsyy",
+    "url": "https://play-drm.aliiptv.com/live/dsyy.m3u8"
+  },
+  "hbotw": {
+    "name": "HBO",
+    "path": "hbotw",
+    "url": "https://play-drm.aliiptv.com/live/hbotw.m3u8"
+  },
+  "wlty": {
+    "name": "纬来体育",
+    "path": "wlty",
+    "url": "https://play-drm.aliiptv.com/live/wlty.m3u8"
+  },
+  "dwxq": {
+    "name": "動物星球",
+    "path": "dwxq",
+    "url": "https://play-drm.aliiptv.com/live/dwxq.m3u8"
+  },
+  "lstime": {
+    "name": "龍翔時代",
+    "path": "lstime",
+    "url": "https://play-drm.aliiptv.com/live/lstime.m3u8"
+  },
+  "warnertv": {
+    "name": "Warner TV",
+    "path": "warnertv",
+    "url": "https://play-drm.aliiptv.com/live/warnertv.m3u8"
+  },
+  "nowbg": {
+    "name": "Now 爆谷台",
+    "path": "nowbg",
+    "url": "https://play-drm.aliiptv.com/live/nowbg.m3u8"
+  },
+  "channel5": {
+    "name": "CHANNEL 5",
+    "path": "channel5",
+    "url": "https://p-drm.aliiptv.com/live/channel5.m3u8"
+  },
+  "bgxy": {
+    "name": "NOW 星影台",
+    "path": "bgxy",
+    "url": "https://play-drm.aliiptv.com/live/bgxy.m3u8"
+  },
+  "cnkt": {
+    "name": "CN 卡通",
+    "path": "cnkt",
+    "url": "https://play-drm.aliiptv.com/live/cnkt.m3u8"
+  },
+  "ROCKAction": {
+    "name": "ROCK 动作电影",
+    "path": "ROCKAction",
+    "url": "https://play-drm.aliiptv.com/live/ROCKAction.m3u8"
+  },
+  "mtvhd": {
+    "name": "MTV",
+    "path": "mtvhd",
+    "url": "https://play-drm.aliiptv.com/live/mtvhd.m3u8"
+  },
+  "cinemax": {
+    "name": "CINEMAX",
+    "path": "cinemax",
+    "url": "https://play-drm.aliiptv.com/live/cinemax.m3u8"
+  },
+  "wldy": {
+    "name": "緯來電影台",
+    "path": "wldy",
+    "url": "https://play-drm.aliiptv.com/live/wldy.m3u8"
+  },
+  "BBCLifestyle": {
+    "name": "BBC Lifestyle",
+    "path": "BBCLifestyle",
+    "url": "https://play-drm.aliiptv.com/live/BBCLifestyle.m3u8"
+  },
+  "CatchPlay": {
+    "name": "CatchPlay 电影台",
+    "path": "CatchPlay",
+    "url": "https://p-drm.aliiptv.com/live/CatchPlay.m3u8"
+  },
+  "momomod": {
+    "name": "MOMO 亲子台",
+    "path": "momomod",
+    "url": "https://p-drm.aliiptv.com/live/momomod.m3u8"
+  },
+  "TDMOuMun": {
+    "name": "澳门澳视",
+    "path": "TDMOuMun",
+    "url": "https://p-drm.aliiptv.com/live/TDMOuMun.m3u8"
+  },
+  "LotusTV": {
+    "name": "莲花卫视",
+    "path": "LotusTV",
+    "url": "https://play-drm.aliiptv.com/live/LotusTV.m3u8"
+  },
+  "AMacau": {
+    "name": "澳门 Macau",
+    "path": "AMacau",
+    "url": "https://p-drm.aliiptv.com/live/AMacau.m3u8"
+  },
+  "nowNews": {
+    "name": "NOW 新闻台",
+    "path": "nowNews",
+    "url": "https://play-drm.aliiptv.com/live/nowNews.m3u8"
+  }
+}

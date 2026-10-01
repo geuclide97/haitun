@@ -1,0 +1,149 @@
+=== 超级直播 频道列表（共 72 频道）===
+
+[10001] CCTV-1 綜合  (CCTV-1 General)  epg=cntv-cctv1  bits=258
+    ysp://cctv1
+    yspweb://cctv1
+    mshd://p2p.aliiptv.com/live/cctv1
+    https://ldncctvwbcdcnc.v.wscdns.com/ldncctvwbcd/cdrmldcctv1_1/index.m3u8
+[10002] CCTV-2 财经  (CCTV-2 Finance)  epg=cntv-cctv2  bits=2
+    mshd://p2p.aliiptv.com/live/cctv2
+[10003] CCTV-3 综艺  (CCTV-3 Show)  epg=cntv-cctv3  bits=2
+    mshd://p2p.aliiptv.com/live/cctv3
+[10004] CCTV-4 中文国际  (CCTV-4 International)  epg=cntv-cctv4  bits=2
+    mshd://p2p.aliiptv.com/live/cctv4
+[10005] CCTV-5 体育  (CCTV-5 Sports)  epg=cntv-cctv5  bits=66
+    mshd://p2p.aliiptv.com/live/cctv5
+[10006] CCTV-6 电影  (CCTV-6 Movies)  epg=cntv-cctv6  bits=18
+    mshd://p2p.aliiptv.com/live/cctv6
+[10007] CCTV-7 国防军事  (CCTV-7 National)  epg=cntv-cctv7  bits=514
+    mshd://p2p.aliiptv.com/live/cctv7
+[10008] CCTV-8 电视剧  (CCTV-8 TV Drama)  epg=cntv-cctv8  bits=34
+    mshd://p2p.aliiptv.com/live/cctv8
+[10009] CCTV-9 纪录  (CCTV-9 Documentary)  epg=cntv-cctvjilu  bits=514
+    mshd://p2p.aliiptv.com/live/cctv9
+[10010] CCTV-10 科教  (CCTV-10 Education)  epg=cntv-cctv10  bits=2
+    mshd://p2p.aliiptv.com/live/cctv10
+[10011] CCTV-11 戏曲  (CCTV-11 Opera)  epg=cntv-cctv11  bits=2
+    mshd://p2p.aliiptv.com/live/cctv11
+[10012] CCTV-12 社会与法  (CCTV-12 Society)  epg=cntv-cctv12  bits=2
+    mshd://p2p.aliiptv.com/live/cctv12
+[10013] CCTV-13 新闻  (CCTV-13 News)  epg=cntv-cctv13  bits=10
+    mshd://p2p.aliiptv.com/live/cctv13
+[10014] CCTV-14 少儿  (CCTV-14 Kids)  epg=cntv-cctvchild  bits=258
+    mshd://p2p.aliiptv.com/live/cctv14
+[10015] CCTV-15 音乐  (CCTV-15 Music)  epg=cntv-cctv15  bits=130
+    mshd://p2p.aliiptv.com/live/cctv15
+[10016] CCTV-16 奥林匹克  (CCTV-16 Olympic)  epg=cntv-cctv16  bits=66
+    mshd://p2p.aliiptv.com/live/cctv16
+[10017] CCTV-17 农业  (CCTV-17 Rural)  epg=cntv-cctv17  bits=2
+    mshd://p2p.aliiptv.com/live/cctv17
+[10018] TVB 翡翠台  (TVB Jade)  epg=mytv-J  bits=1024
+    mshd://p2p.aliiptv.com/live/jade
+[10019] TVB 星河  (TVB Xing He)  epg=tvbanywhere-I-XHCC  bits=1024
+    mshd://p2p.aliiptv.com/live/tvbxinghe
+[10020] 新加坡8频道  (CHANNEL 8)  epg=mewatch-97104  bits=2048
+    mshd://p2p.aliiptv.com/live/channel8
+[10021] CHANNEL U  (CHANNEL U)  epg=mewatch-97129  bits=2048
+    mshd://p2p.aliiptv.com/live/channelu
+[10022] 新加坡亚洲新闻  (Channel News Asia)  epg=now-322  bits=2056
+    mshd://p2p.aliiptv.com/live/channelnewsasia
+[10023] 浙江卫视  (ZheJiang TV)  epg=cntv-zhejiang  bits=4
+    mshd://p2p.aliiptv.com/live/zhejiang
+[10024] Discovery 探索  (Discovery TW)  epg=dafeng-19  bits=512
+    mshd://p2p.aliiptv.com/live/Discovery
+[10025] 湖南卫视  (HuNan TV)  epg=cntv-hunan  bits=4
+    mshd://p2p.aliiptv.com/live/hunan
+[10026] TVB Plus  (TVB Plus)  epg=mytv-B  bits=1024
+    mshd://p2p.aliiptv.com/live/tvbPlus
+[10027] TVB明珠台  (TVB Pearl)  epg=mytv-P  bits=1024
+    mshd://p2p.aliiptv.com/live/tvbPearl
+[10028] TVB无线新闻  (TVB News)  epg=mytv-C  bits=1032
+    mshd://p2p.aliiptv.com/live/tvbNews
+[10029] Viu TV  (Viu TV)  epg=now-099  bits=1024
+    mshd://p2p.aliiptv.com/live/ViuTV
+[10030] ViuTV six  (ViuTV six)  epg=now-096  bits=1024
+    mshd://p2p.aliiptv.com/live/ViuTVsix
+[10031] 港台电视31  (RTHK TV 31)  epg=epgpw-368550  bits=1024
+    mshd://p2p.aliiptv.com/live/rthktv31
+[10032] 港台电视32  (RTHK TV 32)  epg=epgpw-368551  bits=1024
+    mshd://p2p.aliiptv.com/live/rthktv32
+[10033] 江苏卫视  (JiangSu TV)  epg=cntv-jiangsu  bits=4
+    mshd://p2p.aliiptv.com/live/jiangsu
+[10034] 东方卫视  (ShangHai Tv)  epg=cntv-dongfang  bits=4
+    mshd://p2p.aliiptv.com/live/dongfang
+[10035] CHC影迷电影  (CHC HD Movies)  epg=chc-74  bits=16
+    mshd://p2p.aliiptv.com/live/chchd
+[10036] CHC动作电影  (CHC Action Movies)  epg=chc-73  bits=16
+    mshd://p2p.aliiptv.com/live/chcaction
+[10037] CHC家庭影院  (CHC Home Theater)  epg=chc-72  bits=16
+    mshd://p2p.aliiptv.com/live/CHCHomeTheater
+[10038] 凤凰卫视中文台  (Phoenix Chinese Channel)  epg=now-548  bits=1032
+    mshd://p2p.aliiptv.com/live/HDPhxChinese
+[10039] 凤凰卫视资讯台  (Phoenix InfoNews Channel)  epg=now-366  bits=1032
+    mshd://p2p.aliiptv.com/live/HDPhxInfonews
+[10040] 凤凰卫视香港台  (Phoenix Hong Kong Channel)  epg=epgpw-410378  bits=1032
+    mshd://p2p.aliiptv.com/live/HDPhxHK
+[10041] 美亞電影台  (Mei Ah Movie Channel)  epg=mytv-CMAM  bits=1040
+    mshd://p2p.aliiptv.com/live/MeiAhMovieChannel
+[10042] 天映經典頻道  (Celestial Classic Movies)  epg=mytv-CCCM  bits=1040
+    mshd://p2p.aliiptv.com/live/CelestialClassicMovies
+[10043] HBO HD  (HBO HD)  epg=dafeng-207  bits=16
+    mshd://p2p.aliiptv.com/live/HBOHD
+[10044] HBO 家庭影院  (HBO Family HD)  epg=dafeng-205  bits=16
+    mshd://p2p.aliiptv.com/live/HBOfamilyHD
+[10045] HBO 强档影院  (HBO Hits HD)  epg=dafeng-204  bits=16
+    mshd://p2p.aliiptv.com/live/HBOHitsHD
+[10046] HBO 原创影院  (HBO Signature HD)  epg=dafeng-206  bits=16
+    mshd://p2p.aliiptv.com/live/HBOSignature
+[10048] 私人影院  (Cinep HD)  epg=  bits=1040
+    mshd://p2p.aliiptv.com/live/cinep
+[10049] 東森洋片  (EBC Thrill)  epg=dafeng-66  bits=2064
+    mshd://p2p.aliiptv.com/live/dsyp
+[10050] 東森电影  (EBC Movie)  epg=dafeng-62  bits=2064
+    mshd://p2p.aliiptv.com/live/dsdy
+[10051] 東森戲劇  (EBC Drama)  epg=dafeng-40  bits=2080
+    mshd://p2p.aliiptv.com/live/dsxj
+[10052] 東森综合  (EBC Variety)  epg=dafeng-32  bits=2048
+    mshd://p2p.aliiptv.com/live/dszh
+[10053] 東森幼幼  (YOYO TV)  epg=dafeng-25  bits=2304
+    mshd://p2p.aliiptv.com/live/dsyy
+[10054] HBO  (HBO)  epg=dafeng-65  bits=2064
+    mshd://p2p.aliiptv.com/live/hbotw
+[10055] 纬来体育  (Videoland Sports)  epg=dafeng-72  bits=2112
+    mshd://p2p.aliiptv.com/live/wlty
+[10056] 動物星球  (Animal Planet)  epg=dafeng-21  bits=2560
+    mshd://p2p.aliiptv.com/live/dwxq
+[10057] 龍翔時代  (LS TIME)  epg=dafeng-63  bits=2064
+    mshd://p2p.aliiptv.com/live/lstime
+[10058] Warner TV   (Warner TV )  epg=homeplus-209-229  bits=2080
+    mshd://p2p.aliiptv.com/live/warnertv
+[10059] Now 爆谷台  (Now Baogu Movies)  epg=now-133  bits=1040
+    mshd://p2p.aliiptv.com/live/nowbg
+[10060] CHANNEL 5  (CHANNEL 5)  epg=mewatch-97098  bits=2048
+    mshd://p2p.aliiptv.com/live/channel5
+[10063] NOW 星影台  (Now Movie)  epg=now-138  bits=1040
+    mshd://p2p.aliiptv.com/live/bgxy
+[10064] CN 卡通  (Cartoon Network)  epg=dafeng-22  bits=2304
+    mshd://p2p.aliiptv.com/live/cnkt
+[10065] ROCK 动作电影  (Cork Action)  epg=dafeng-126  bits=2064
+    mshd://p2p.aliiptv.com/live/ROCKAction
+[10066] MTV  (MTV)  epg=dafeng-97  bits=2176
+    mshd://p2p.aliiptv.com/live/mtvhd
+[10067] CINEMAX  (CINEMAX)  epg=dafeng-70  bits=2064
+    mshd://p2p.aliiptv.com/live/cinemax
+[10068] 緯來電影台  (Videoland Movie)  epg=dafeng-64  bits=2064
+    mshd://p2p.aliiptv.com/live/wldy
+[10069] BBC Lifestyle  (BBC Lifestyle)  epg=dafeng-84  bits=2560
+    mshd://p2p.aliiptv.com/live/BBCLifestyle
+[10070] CatchPlay 电影台  (CatchPlay)  epg=dafeng-61  bits=2064
+    mshd://p2p.aliiptv.com/live/CatchPlay
+[10071] MOMO 亲子台  (MOMO)  epg=dafeng-24  bits=2304
+    mshd://p2p.aliiptv.com/live/momomod
+[10072] 澳门澳视  (TDM Ou Mun)  epg=  bits=1024
+    mshd://p2p.aliiptv.com/live/TDMOuMun
+[10073] 莲花卫视  (Lotus TV)  epg=  bits=1024
+    mshd://p2p.aliiptv.com/live/LotusTV
+[10074] 澳门 Macau  (Ou Mun Macau)  epg=  bits=1024
+    mshd://p2p.aliiptv.com/live/AMacau
+[10075] NOW 新闻台  (NOW News)  epg=now-332  bits=1032
+    mshd://p2p.aliiptv.com/live/nowNews
