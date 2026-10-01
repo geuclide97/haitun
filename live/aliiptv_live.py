@@ -25,6 +25,7 @@ sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='repla
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 CHANNEL_FILE = os.path.join(HERE, 'channel_list_full.txt')
+CATEGORY_MD = os.path.join(HERE, '超级直播频道列表.md')
 OUT_DEFAULT = os.path.join(HERE, '超级直播海外直连_完整.m3u')
 JSON_OUT = os.path.join(HERE, 'aliiptv_channels.json')
 
@@ -78,6 +79,29 @@ def load_channel_list():
     return out
 
 
+def load_categories():
+    """从分类 md 解析 (分类, [(频道名, 路径)])，用于生成分组 M3U。
+    用 names/paths 各自 findall 再 zip（可靠）：每个频道恰好 1 个 mshd 路径。
+    """
+    groups = []
+    if os.path.exists(CATEGORY_MD):
+        try:
+            txt = open(CATEGORY_MD, encoding='utf-8').read()
+            parts = re.split(r'(?m)^##\s+.+$', txt)
+            titles = re.findall(r'(?m)^##\s+(.+)$', txt)
+            # parts[0]=开头说明，之后每组 body
+            for k, title in enumerate(titles):
+                body = parts[k+1] if k+1 < len(parts) else ''
+                names = re.findall(r'-\s+\*\*(.+?)\*\*', body)
+                paths = re.findall(r'mshd://p2p\.aliiptv\.com/live/(\S+)', body)
+                items = list(zip(names, paths))
+                if items:
+                    groups.append((title.strip(), items))
+        except Exception:
+            groups = []
+    return groups
+
+
 def resolve(channel_path):
     """返回第一个可用的 CDN URL，无则 None。"""
     import requests
@@ -118,6 +142,26 @@ def build(out_path, want_json):
     with open(out_path, 'w', encoding='utf-8') as f:
         f.write('\n'.join(lines) + '\n')
     print(f'已生成 {out_path} ({ok} 频道) @ {time.strftime("%H:%M:%S")}')
+
+    # 同时生成“分组版”（若分类文件存在）
+    cat_path = os.path.join(os.path.dirname(out_path), '超级直播海外直连_分类.m3u')
+    groups = load_categories()
+    if groups:
+        clines = ['#EXTM3U']
+        cok = 0
+        for gname, items in groups:
+            for name, path in items:
+                u = result.get(path, {}).get('url')
+                if u:
+                    clines.append(f'#EXTINF:-1 group-title="{gname}",{name}')
+                    clines.append(u)
+                    cok += 1
+        try:
+            with open(cat_path, 'w', encoding='utf-8') as f:
+                f.write('\n'.join(clines) + '\n')
+            print(f'已生成分组版 {cat_path} ({cok} 频道)')
+        except Exception as e:
+            print('生成分组版失败:', e)
 
 
 if __name__ == '__main__':
