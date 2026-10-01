@@ -323,6 +323,18 @@
       "type": 0,
       "playerType": 2,
       "url": "https://tv-m3u-live.app.workbuddy.host/tv.m3u"
+    },
+    {
+      "name": "YueChan·国内",
+      "type": 0,
+      "playerType": 2,
+      "url": "https://raw.githubusercontent.com/YueChan/Live/refs/heads/main/GNTV.m3u"
+    },
+    {
+      "name": "Juli·港澳台",
+      "type": 0,
+      "playerType": 2,
+      "url": "https://cdn.qd.je/live.m3u"
     }
   ],
   "warningText": "本配置仅供学习交流，请勿用于商业用途。",
