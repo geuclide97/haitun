@@ -1,0 +1,36 @@
+name: Sync AliIPTV live M3U
+
+on:
+  schedule:
+    # 每 6 小时刷新一次海外直连 M3U（UTC）
+    - cron: "17 */6 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Install deps
+        run: pip install requests
+
+      - name: Generate live M3U
+        working-directory: live
+        run: python aliiptv_live.py --json
+
+      - name: Commit changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "sync: 更新 AliIPTV 海外直连 M3U"
+          commit_author: "github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>"
+          file_pattern: "live/*"
