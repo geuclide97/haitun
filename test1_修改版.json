@@ -204,19 +204,6 @@
       "filterable": 0
     },
     {
-      "key": "文才影视",
-      "name": "文才丨影视",
-      "type": 3,
-      "api": "https://dogpan.com/f/oYPVUv/%E6%96%87%E6%89%8D.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "playerType": 1,
-      "ext": {
-        "site": "https://m.hkybqufgh.com,https://m.sizhengxt.com,https://m.9zhoukj.com,https://m.sizhengxt.com,https://m.jiabaide.cn"
-      }
-    },
-    {
       "key": "JinPai",
       "name": "🏅┃金牌┃影院",
       "type": 3,
