@@ -321,10 +321,10 @@
       "url": "https://cdn.jsdelivr.net/gh/Guovin/iptv-api@gd/output/result.m3u"
     },
     {
-      "name": "fleung49·yt",
+      "name": "体育测试",
       "type": 0,
       "playerType": 2,
-      "url": "https://raw.githubusercontent.com/fleung49/star/refs/heads/main/YT"
+      "url": "https://tv-m3u-live.app.workbuddy.host/tv.m3u"
     }
   ],
   "warningText": "本配置仅供学习交流，请勿用于商业用途。",
