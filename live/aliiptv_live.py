@@ -21,8 +21,13 @@
 """
 import io, sys, os, re, json, time, argparse
 
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
-
+try:
+    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+except Exception:
+    try:
+        sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
+    except Exception:
+        pass
 HERE = os.path.dirname(os.path.abspath(__file__))
 CHANNEL_FILE = os.path.join(HERE, 'channel_list_full.txt')
 CATEGORY_MD = os.path.join(HERE, '超级直播频道列表.md')
