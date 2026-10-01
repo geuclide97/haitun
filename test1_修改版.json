@@ -292,10 +292,21 @@
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 0
+    },
+    {
+      "key": "wencai",
+      "name": "✏️┆金牌┆影视",
+      "type": 3,
+      "api": "https://dogpan.com/f/oYPVUv/%E6%96%87%E6%89%8D.py",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1,
+      "ext": {
+        "site": "https://www.tjrongze.com,https://y2s52n7.com,https://m.hkybqufgh.com,https://m.sizhengxt.com,https://m.9zhoukj.com,https://m.jiabaide.cn"
+      }
     }
   ],
   "lives": [
- 
     {
       "name": "fleung49·mit",
       "type": 0,
@@ -314,7 +325,7 @@
       "playerType": 2,
       "url": "https://raw.githubusercontent.com/stevenrop/live1/refs/heads/main/57.txt"
     },
-       {
+    {
       "name": "IPTV直播",
       "type": 0,
       "playerType": 2,
