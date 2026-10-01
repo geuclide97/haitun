@@ -336,7 +336,13 @@
       "playerType": 2,
       "url": "https://cdn.qd.je/live.m3u"
     }
-  ],
+,
+    {
+      "name": "超级直播",
+      "type": 0,
+      "playerType": 2,
+      "url": "https://raw.githubusercontent.com/geuclide97/haitun/main/live/aliiptv_categorized.m3u"
+    }  ],
   "warningText": "本配置仅供学习交流，请勿用于商业用途。",
   "parses": [
     {
