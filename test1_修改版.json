@@ -318,12 +318,7 @@
       "playerType": 2,
       "url": "https://cdn.jsdelivr.net/gh/Guovin/iptv-api@gd/output/result.m3u"
     },
-    {
-      "name": "体育测试",
-      "type": 0,
-      "playerType": 2,
-      "url": "https://tv-m3u-live.app.workbuddy.host/tv.m3u"
-    },
+  
     {
       "name": "YueChan·国内",
       "type": 0,
