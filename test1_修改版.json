@@ -291,6 +291,26 @@
       "ext": {
         "site": "https://www.tjrongze.com,https://y2s52n7.com,https://m.hkybqufgh.com,https://m.sizhengxt.com,https://m.9zhoukj.com,https://m.jiabaide.cn"
       }
+    },
+    {
+      "key": "如意视频",
+      "name": "如意视频",
+      "type": 3,
+      "api": "https://raw.githubusercontent.com/geuclide97/haitun/main/%E5%A6%82%E6%84%8F%E8%A7%86%E9%A2%91.py",
+      "changeable": 0,
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1
+    },
+    {
+      "key": "袋鼠影视",
+      "name": "袋鼠影视",
+      "type": 3,
+      "api": "https://raw.githubusercontent.com/geuclide97/haitun/main/%E8%A2%8B%E9%BC%A0%E5%BD%B1%E8%A7%86.py",
+      "changeable": 0,
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 0
     }
   ],
   "lives": [
