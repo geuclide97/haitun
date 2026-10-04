@@ -33,7 +33,6 @@ class Spider:
             {"type_id": "2", "type_name": "电视剧"},
             {"type_id": "3", "type_name": "动漫"},
             {"type_id": "4", "type_name": "综艺"},
-            {"type_id": "67", "type_name": "伦理"},
         ]
         self._lock = threading.Lock()
         self._session = None
