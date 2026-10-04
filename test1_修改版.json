@@ -311,6 +311,16 @@
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 0
+    },
+    {
+      "key": "酷客影院",
+      "name": "酷客影院",
+      "type": 3,
+      "api": "https://raw.githubusercontent.com/geuclide97/haitun/main/8kvod.py",
+      "changeable": 0,
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 0
     }
   ],
   "lives": [
@@ -338,7 +348,6 @@
       "playerType": 2,
       "url": "https://cdn.jsdelivr.net/gh/Guovin/iptv-api@gd/output/result.m3u"
     },
-  
     {
       "name": "YueChan·国内",
       "type": 0,
@@ -350,14 +359,14 @@
       "type": 0,
       "playerType": 2,
       "url": "https://cdn.qd.je/live.m3u"
-    }
-,
+    },
     {
       "name": "超级直播",
       "type": 0,
       "playerType": 2,
       "url": "https://raw.githubusercontent.com/geuclide97/haitun/main/live/aliiptv_categorized.m3u"
-    }  ],
+    }
+  ],
   "warningText": "本配置仅供学习交流，请勿用于商业用途。",
   "parses": [
     {
