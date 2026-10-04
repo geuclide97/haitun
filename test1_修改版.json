@@ -365,6 +365,12 @@
       "type": 0,
       "playerType": 2,
       "url": "https://raw.githubusercontent.com/geuclide97/haitun/main/live/aliiptv_categorized.m3u"
+    },
+    {
+      "name": "VST大陆专属",
+      "type": 0,
+      "playerType": 2,
+      "url": "https://raw.githubusercontent.com/geuclide97/haitun/main/live/vst_dalu.m3u"
     }
   ],
   "warningText": "本配置仅供学习交流，请勿用于商业用途。",
