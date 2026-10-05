@@ -586,6 +586,11 @@ CHANNELS = [
 
 UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36'
 
+# 默认码率档位。直播条目 ext 里加 "defn": "fhd" 可切回高码率。
+# fhd 单片约 2000KB(≈2.7Mbps) / hd 与 sd 约 800KB(≈1.1Mbps) / 720p 约 577KB(≈0.8Mbps)
+DEFN = 'hd'
+DEFN_CHOICES = ('fhd', 'hd', 'sd', '720p', '480p')
+
 REFRESH_INTERVAL = 10   # 清单刷新间隔(秒)
 IDLE_TIMEOUT = 120      # 没人看就停刷
 WINDOW = 300            # 每次向时移接口要的窗口(秒)
@@ -832,6 +837,17 @@ def _seg_key(url, pdt):
         return 'pdt:' + pdt
     p = urllib.parse.urlsplit(url)
     return p.scheme + '://' + p.netloc + p.path
+
+
+def _apply_defn():
+    """把当前 DEFN 刷到 63 路所有频道上。CHANNELS 里写死的是 fhd, 这里统一覆盖。"""
+    for ch in CHANNEL_MAP.values():
+        if ch.defn != DEFN:
+            ch.defn = DEFN
+    return DEFN
+
+
+_apply_defn()   # 模块加载即生效, 不依赖 App 是否调用 init
 
 
 def jce_fetch(ch):
@@ -1194,7 +1210,7 @@ class Spider(_BaseSpider):
         self._live_fmt = 'm3u'
 
     def init(self, extend=''):
-        global LOGO_MODE, LOGO_PREFETCH
+        global LOGO_MODE, LOGO_PREFETCH, DEFN
         ext = _ext_json(extend)
         if ext.get('port'):
             try:
@@ -1203,6 +1219,12 @@ class Spider(_BaseSpider):
                 self._port = DEFAULT_PORT
         if str(ext.get('live', '')).lower() in ('txt', 'm3u'):
             self._live_fmt = str(ext['live']).lower()
+        d = str(ext.get('defn', '')).strip().lower()
+        if d in DEFN_CHOICES:
+            if d != DEFN:
+                DEFN = d
+                _log('码率档位 -> %s' % DEFN)
+        _apply_defn()
         mode = str(ext.get('logo', '')).lower()
         if mode in ('local', 'remote', 'off'):
             LOGO_MODE = mode
