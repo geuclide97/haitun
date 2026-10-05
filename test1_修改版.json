@@ -365,6 +365,22 @@
       "type": 0,
       "playerType": 2,
       "url": "https://raw.githubusercontent.com/geuclide97/haitun/main/live/aliiptv_categorized.m3u"
+    },
+    {
+      "name": "央视频",
+      "url": "https://capi.yangshipin.cn/api/oms/pc/navigation/home_top_nav",
+      "api": "https://raw.githubusercontent.com/geuclide97/haitun/main/cctv/yangshipin.py",
+      "ext": "https://raw.githubusercontent.com/geuclide97/haitun/main/cctv/yangshipin.json",
+      "epg": "https://github.com/litiande03/epg/raw/refs/heads/master/pl.xml.gz",
+      "timeZone": "Asia/Shanghai",
+      "timeout": 30
+    },
+    {
+      "name": "央視網",
+      "url": "https://tv.cctv.com/live/",
+      "api": "https://raw.githubusercontent.com/geuclide97/haitun/main/cctv/cctv.py",
+      "ext": "https://raw.githubusercontent.com/geuclide97/haitun/main/cctv/cctv.json",
+      "timeout": 20
     }
   ],
   "warningText": "本配置仅供学习交流，请勿用于商业用途。",
