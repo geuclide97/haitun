@@ -365,6 +365,18 @@
       "type": 0,
       "playerType": 2,
       "url": "https://raw.githubusercontent.com/geuclide97/haitun/main/live/aliiptv_categorized.m3u"
+    },
+    {
+      "name": "央视频直播",
+      "playerType": 2,
+      "api": "https://raw.githubusercontent.com/geuclide97/haitun/main/live/ysp-fongmi.py",
+      "url": "ysp://all",
+      "ext": {
+        "port": 8899,
+        "live": "m3u",
+        "logo": "local",
+        "logo_prefetch": false
+      }
     }
   ],
   "warningText": "本配置仅供学习交流，请勿用于商业用途。",
