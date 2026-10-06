@@ -321,6 +321,16 @@
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 0
+    },
+    {
+      "key": "咕噜4K",
+      "name": "咕噜4K",
+      "type": 3,
+      "api": "https://raw.githubusercontent.com/geuclide97/haitun/main/%E5%92%90%E5%99%9C4K.py",
+      "changeable": 0,
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 0
     }
   ],
   "lives": [
