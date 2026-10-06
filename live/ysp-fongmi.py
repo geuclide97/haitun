@@ -596,8 +596,11 @@ DEFN_CHOICES = ('fhd', 'hd', 'sd', '720p', '480p')
 # 实测：同一个分片，首次可能要 46 秒，断开重连只要 0.34 秒(快137倍)。
 # 播放器自己不会重试慢连接，所以由本地服务代取，发现连歪了就地重连续传。
 SEG_PROXY = True          # 默认开；ext 里写 "proxy": false 可退回播放器直连
-SEG_MIN_RATE = 60 * 1024  # 低于约 60KB/s(≈0.5Mbps) 判定为连歪了
-SEG_DETECT_AFTER = 1.5    # 转发开始多久后才判速(前 1.5 秒留给握手)
+# 阈值要卡在「正常片」和「慢片」中间才有用。盒子实测：
+# 正常片 537~2163 KB/s，慢片只有 77 KB/s。早先设 60KB/s 太宽松，
+# 慢片反而被当成正常，重连根本没触发。
+SEG_MIN_RATE = 250 * 1024  # 低于约 250KB/s(≈2Mbps) 判定为连歪了，ext 里 seg_rate 可改
+SEG_DETECT_AFTER = 1.5     # 转发开始多久后才判速(前 1.5 秒留给握手)
 SEG_MAX_RETRY = 3         # 一片最多重连几次
 SEG_CONNECT_TIMEOUT = 10  # 单次连接超时(秒)
 
@@ -1182,7 +1185,11 @@ def _diag():
     d = _logo_cache_dir()
     with _LOGO_LOCK:
         cached, failed = len(_LOGO_MEM), len(_LOGO_FAIL)
+    with _SEG_LOCK:
+        n_seg = len(_SEG_URLS)
     lines = ['port=%d' % _SERVER_PORT,
+             'seg_proxy=%s min_rate=%dKB/s detect_after=%.1fs retry=%d registered=%d'
+             % (SEG_PROXY, SEG_MIN_RATE // 1024, SEG_DETECT_AFTER, SEG_MAX_RETRY, n_seg),
              'logo mode=%s total=%d builtin=%d cached=%d failed=%d dir=%s' % (
                  LOGO_MODE, len(CHANNEL_ORDER), len(LOGO_LOCAL), cached, failed, d or '-')]
     for slug in CHANNEL_ORDER:
@@ -1369,12 +1376,18 @@ class Spider(_BaseSpider):
         self._live_fmt = 'm3u'
 
     def init(self, extend=''):
-        global LOGO_MODE, LOGO_PREFETCH, DEFN, SEG_PROXY
+        global LOGO_MODE, LOGO_PREFETCH, DEFN, SEG_PROXY, SEG_MIN_RATE
         ext = _ext_json(extend)
         pv = str(ext.get('proxy', '')).strip().lower()
         if pv in ('0', 'false', 'no', 'off'):
             SEG_PROXY = False
             _log('分片代理已关闭, 播放器直连源站')
+        try:
+            rk = int(ext.get('seg_rate', 0))
+            if rk > 0:
+                SEG_MIN_RATE = rk * 1024
+        except Exception:
+            pass
         if ext.get('port'):
             try:
                 self._port = int(ext['port'])
