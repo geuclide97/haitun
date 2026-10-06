@@ -46,6 +46,7 @@ m3u8 就等于一直在看直播。视频分片本身由播放器直连央视 CD
 
 import base64
 import gzip
+import hashlib
 import json
 import os
 import random
@@ -591,6 +592,15 @@ UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML,
 DEFN = 'hd'
 DEFN_CHOICES = ('fhd', 'hd', 'sd', '720p', '480p')
 
+# ---- 分片代理：专门对付「偶发慢分片」 ----
+# 实测：同一个分片，首次可能要 46 秒，断开重连只要 0.34 秒(快137倍)。
+# 播放器自己不会重试慢连接，所以由本地服务代取，发现连歪了就地重连续传。
+SEG_PROXY = True          # 默认开；ext 里写 "proxy": false 可退回播放器直连
+SEG_MIN_RATE = 60 * 1024  # 低于约 60KB/s(≈0.5Mbps) 判定为连歪了
+SEG_DETECT_AFTER = 1.5    # 转发开始多久后才判速(前 1.5 秒留给握手)
+SEG_MAX_RETRY = 3         # 一片最多重连几次
+SEG_CONNECT_TIMEOUT = 10  # 单次连接超时(秒)
+
 REFRESH_INTERVAL = 10   # 清单刷新间隔(秒)
 IDLE_TIMEOUT = 120      # 没人看就停刷
 WINDOW = 300            # 每次向时移接口要的窗口(秒)
@@ -839,6 +849,151 @@ def _seg_key(url, pdt):
     return p.scheme + '://' + p.netloc + p.path
 
 
+# ================================================================ 分片代理
+# 真实地址 -> 本地 /seg/<短key>。播放器只认本地地址，被我们接管后
+# 才能在慢的时候自己换条连接重来。
+
+_SEG_URLS = {}
+_SEG_LOCK = threading.RLock()
+
+
+def _seg_trim():
+    if len(_SEG_URLS) > 4000:
+        for k in list(_SEG_URLS.keys())[:2000]:
+            _SEG_URLS.pop(k, None)
+
+
+def _seg_proxy_url(url):
+    """登记真实地址，返回给播放器的本地地址"""
+    k = hashlib.md5(url.encode('utf-8', 'replace')).hexdigest()[:16]
+    with _SEG_LOCK:
+        _SEG_URLS[k] = url
+        _seg_trim()
+    return 'http://127.0.0.1:%d/seg/%s' % (_SERVER_PORT, k)
+
+
+def _seg_lookup(key):
+    with _SEG_LOCK:
+        return _SEG_URLS.get(key)
+
+
+def _local_url(url):
+    """下发给播放器时用本地代理地址，还是直接给 CDN 地址"""
+    if not SEG_PROXY:
+        return url
+    return _seg_proxy_url(url)
+
+
+def _rewrite_bk(pl):
+    """bk 链路的清单是原始文本，逐行把分片地址换成本地地址"""
+    if not pl or not SEG_PROXY:
+        return pl
+    out = []
+    for line in pl.splitlines():
+        s = line.strip()
+        out.append(_seg_proxy_url(s) if (s and not s.startswith('#')) else line)
+    return '\n'.join(out) + '\n'
+
+
+def _seg_headers():
+    return {'User-Agent': UA, 'Referer': 'https://tv.cctv.com/'}
+
+
+class _SlowConn(Exception):
+    def __init__(self, got):
+        self.got = got
+
+
+def _send_simple(cs, code, ctype, body):
+    try:
+        cs.sendall(('HTTP/1.1 %d %s\r\nContent-Type: %s\r\nContent-Length: %d\r\n'
+                    'Access-Control-Allow-Origin: *\r\nConnection: close\r\n\r\n'
+                    % (code, 'OK' if code == 200 else 'ERR', ctype, len(body))
+                    ).encode('latin-1') + body)
+    except Exception:
+        pass
+
+
+def _pump(cs, conn):
+    """边收边转发；一旦判定连歪了就抛 _SlowConn，让外层重连"""
+    got = 0
+    start = time.time()
+    while True:
+        try:
+            chunk = conn.read(65536)
+        except Exception:
+            raise _SlowConn(got)
+        if not chunk:
+            return got
+        cs.sendall(chunk)
+        got += len(chunk)
+        el = time.time() - start
+        if el > SEG_DETECT_AFTER and got / el < SEG_MIN_RATE:
+            raise _SlowConn(got)
+
+
+def _serve_segment(cs, key):
+    """
+    代播放器取一片。慢了就断开重连，用 Range 从断点续传，
+    对播放器来说全程透明 —— 它只看到一次普通的下载。
+    """
+    url = _seg_lookup(key)
+    if not url:
+        _send_simple(cs, 404, 'text/plain', b'segment expired')
+        return
+    offset = 0
+    for attempt in range(SEG_MAX_RETRY):
+        hdr = _seg_headers()
+        if offset:
+            hdr['Range'] = 'bytes=%d-' % offset
+        try:
+            conn = urllib.request.urlopen(
+                urllib.request.Request(url, headers=hdr),
+                timeout=SEG_CONNECT_TIMEOUT)
+        except Exception as e:
+            if attempt == 0:
+                _send_simple(cs, 502, 'text/plain',
+                             ('upstream: %s' % str(e)[:60]).encode('utf-8', 'replace'))
+                return
+            continue
+        try:
+            if offset == 0:
+                total = 0
+                cr = conn.headers.get('Content-Range') or ''
+                if '/' in cr:
+                    try:
+                        total = int(cr.split('/')[-1])
+                    except ValueError:
+                        total = 0
+                if not total:
+                    try:
+                        total = int(conn.headers.get('Content-Length') or 0)
+                    except ValueError:
+                        total = 0
+                head = 'HTTP/1.1 200 OK\r\nContent-Type: video/mp2t\r\n'
+                if total:
+                    head += 'Content-Length: %d\r\n' % total
+                head += ('Access-Control-Allow-Origin: *\r\n'
+                         'Cache-Control: max-age=300\r\nConnection: close\r\n\r\n')
+                cs.sendall(head.encode('latin-1'))
+            _pump(cs, conn)
+            return
+        except _SlowConn as e:
+            offset += e.got
+            try:
+                conn.close()
+            except Exception:
+                pass
+            _log('分片重连 %s (已发 %d 字节, 第 %d 次)' % (key, offset, attempt + 1))
+            continue
+        except Exception:
+            try:
+                conn.close()
+            except Exception:
+                pass
+            return
+
+
 def _apply_defn():
     """把当前 DEFN 刷到 63 路所有频道上。CHANNELS 里写死的是 fhd, 这里统一覆盖。"""
     for ch in CHANNEL_MAP.values():
@@ -984,7 +1139,7 @@ def ensure_channel(ch):
 def build_playlist(ch):
     with ch.lock:
         if ch.mode == 'bk':
-            return ch.bk_playlist or None
+            return _rewrite_bk(ch.bk_playlist) or None
         keys = list(ch.order)[-LIVE_WINDOW:]
         segs = [ch.segments[k] for k in keys if k in ch.segments]
     if not segs:
@@ -997,7 +1152,7 @@ def build_playlist(ch):
         if pdt:
             out.append('#EXT-X-PROGRAM-DATE-TIME:' + pdt)
         out.append('#EXTINF:%.3f,' % dur)
-        out.append(url)
+        out.append(_local_url(url))
     return '\n'.join(out) + '\n'
 
 
@@ -1121,6 +1276,10 @@ class _MiniServer(threading.Thread):
             if len(parts) < 2:
                 return
             path = urllib.parse.urlparse(parts[1]).path
+            ms = re.match(r'^/seg/([0-9a-f]{16})$', path)
+            if ms:
+                _serve_segment(cs, ms.group(1))
+                return
             r = _route(path)
             extra = {}
             if len(r) == 4:
@@ -1210,8 +1369,12 @@ class Spider(_BaseSpider):
         self._live_fmt = 'm3u'
 
     def init(self, extend=''):
-        global LOGO_MODE, LOGO_PREFETCH, DEFN
+        global LOGO_MODE, LOGO_PREFETCH, DEFN, SEG_PROXY
         ext = _ext_json(extend)
+        pv = str(ext.get('proxy', '')).strip().lower()
+        if pv in ('0', 'false', 'no', 'off'):
+            SEG_PROXY = False
+            _log('分片代理已关闭, 播放器直连源站')
         if ext.get('port'):
             try:
                 self._port = int(ext['port'])
