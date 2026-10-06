@@ -997,6 +997,70 @@ def _serve_segment(cs, key):
             return
 
 
+# ================================================================ 预热
+# 换台慢的根因：第一次点某个台要串行做完「握手(约1s) + 拉清单(0.3~2.2s)」。
+# 既然换台多半是上下键切相邻频道，就在你盯着某个台看的时候，
+# 把旁边几个台的活先干掉，等你切过去就是热的。
+
+_PREFETCHED = set()
+_PF_LOCK = threading.Lock()
+PREFETCH_WORKERS = 3      # 并发数别太大，免得源站反感
+PREFETCH_NEIGHBORS = 4    # 当前台上下各预热几个
+
+
+def _neighbors(slug, n=PREFETCH_NEIGHBORS):
+    if slug not in CHANNEL_ORDER:
+        return []
+    i = CHANNEL_ORDER.index(slug)
+    out = []
+    for k in range(1, n + 1):
+        if i - k >= 0:
+            out.append(CHANNEL_ORDER[i - k])
+        if i + k < len(CHANNEL_ORDER):
+            out.append(CHANNEL_ORDER[i + k])
+    return out
+
+
+def _prefetch(slugs):
+    """后台并发把这几个台热起来；已热过的不再重复"""
+    todo = []
+    with _PF_LOCK:
+        for s in slugs:
+            if s in _PREFETCHED:
+                continue
+            _PREFETCHED.add(s)
+            todo.append(s)
+    if not todo:
+        return
+    queue = list(todo)
+
+    def one():
+        while True:
+            with _PF_LOCK:
+                if not queue:
+                    return
+                s = queue.pop(0)
+            ch = CHANNEL_MAP.get(s)
+            if ch is None:
+                continue
+            try:
+                if not (ch.segments or ch.bk_playlist):
+                    refresh_once(ch)
+            except Exception:
+                pass
+
+    def run():
+        ts = [threading.Thread(target=one)
+              for _ in range(min(PREFETCH_WORKERS, len(queue)))]
+        for t in ts:
+            t.daemon = True
+            t.start()
+        for t in ts:
+            t.join()
+
+    threading.Thread(target=run, daemon=True).start()
+
+
 def _apply_defn():
     """把当前 DEFN 刷到 63 路所有频道上。CHANNELS 里写死的是 fhd, 这里统一覆盖。"""
     for ch in CHANNEL_MAP.values():
@@ -1241,6 +1305,7 @@ def _route(path):
         if not pl:
             return 503, 'text/plain; charset=utf-8', \
                 ('频道 %s 拉取中/失败: %s' % (ch.name, ch.last_error or '请稍后')).encode('utf-8')
+        _prefetch(_neighbors(slug))   # 顺手把隔壁几个台热上，换台就快了
         return 200, 'application/vnd.apple.mpegurl', pl.encode('utf-8')
     return 404, 'text/plain; charset=utf-8', b'not found'
 
@@ -1468,6 +1533,7 @@ class Spider(_BaseSpider):
     def liveContent(self, url):
         """直播配置: groups 为空 + api 指向本文件时, App 会调这里取列表文字。"""
         port = _ensure_server(self._port) or self._port
+        _prefetch(CHANNEL_ORDER[:8])   # 刚打开列表，先把最可能点的几个台备好
         if self._live_fmt == 'txt':
             out = []
             last = None
