@@ -226,6 +226,15 @@
       "filterable": 1
     },
     {
+      "key": "多多影视",
+      "name": "🐬多多影视.py",
+      "type": 3,
+      "api": "https://raw.githubusercontent.com/geuclide97/zjys9-py/main/%E5%A4%9A%E5%A4%9A%E5%BD%B1%E8%A7%86.py",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1
+    },
+    {
       "key": "山楂影视",
       "name": "🐬山楂影视.py",
       "type": 3,
