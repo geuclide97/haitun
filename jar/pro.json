@@ -1,0 +1,86 @@
+{
+  "spider": "https://raw.githubusercontent.com/geuclide97/haitun/707576c5c87253fd6a42355c6e44cc40896711f0/jar/pro.jar",
+  "sites": [
+    {
+      "key": "csp_Bilibili",
+      "name": "哔哩哔哩",
+      "type": 3,
+      "api": "csp_Bilibili",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1
+    },
+    {
+      "key": "csp_Ytdl",
+      "name": "YouTube",
+      "type": 3,
+      "api": "csp_Ytdl",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1
+    },
+    {
+      "key": "csp_CJJH",
+      "name": "CJJH",
+      "type": 3,
+      "api": "csp_CJJH",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1
+    },
+    {
+      "key": "csp_Hua",
+      "name": "花狐",
+      "type": 3,
+      "api": "csp_Hua",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1
+    },
+    {
+      "key": "csp_Lego",
+      "name": "乐高",
+      "type": 3,
+      "api": "csp_Lego",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1
+    },
+    {
+      "key": "csp_Music1",
+      "name": "音乐",
+      "type": 3,
+      "api": "csp_Music1",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1
+    },
+    {
+      "key": "csp_NovelBd",
+      "name": "小说",
+      "type": 3,
+      "api": "csp_NovelBd",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1
+    },
+    {
+      "key": "csp_SYY",
+      "name": "SYY",
+      "type": 3,
+      "api": "csp_SYY",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1
+    },
+    {
+      "key": "csp_TingShu",
+      "name": "听书",
+      "type": 3,
+      "api": "csp_TingShu",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1
+    }
+  ]
+}
