@@ -1004,8 +1004,15 @@ def _serve_segment(cs, key):
 
 _PREFETCHED = set()
 _PF_LOCK = threading.Lock()
-PREFETCH_WORKERS = 3      # 并发数别太大，免得源站反感
-PREFETCH_NEIGHBORS = 4    # 当前台上下各预热几个
+PREFETCH_ON = True        # ext 里 "prefetch": false 可整体关掉
+# 强度刻意压得很低：预热要发网络请求，会跟正在播的视频抢连接。
+# 实测收益主要来自「上下键切相邻台」，所以预热 2 个邻居就够，
+# 并发压到 1 条，并且等播放稳定后才慢慢做。
+PREFETCH_WORKERS = 1
+PREFETCH_NEIGHBORS = 2
+PREFETCH_DELAY = 3.0      # 返回清单后先让播放稳定，再开始
+PREFETCH_GAP = 0.8        # 每预热一个歇一下，别跟视频抢
+PREFETCH_SKIP_BK = True   # bk 链路失败会 sleep(2) 重试，不掺和
 
 
 def _neighbors(slug, n=PREFETCH_NEIGHBORS):
@@ -1022,7 +1029,9 @@ def _neighbors(slug, n=PREFETCH_NEIGHBORS):
 
 
 def _prefetch(slugs):
-    """后台并发把这几个台热起来；已热过的不再重复"""
+    """后台慢慢把这几个台热起来；已热过的不再重复，全程单线程低强度"""
+    if not PREFETCH_ON:
+        return
     todo = []
     with _PF_LOCK:
         for s in slugs:
@@ -1030,16 +1039,15 @@ def _prefetch(slugs):
                 continue
             _PREFETCHED.add(s)
             todo.append(s)
+    if PREFETCH_SKIP_BK:
+        todo = [s for s in todo if s not in FORCE_BK]
     if not todo:
         return
     queue = list(todo)
 
-    def one():
-        while True:
-            with _PF_LOCK:
-                if not queue:
-                    return
-                s = queue.pop(0)
+    def run():
+        time.sleep(PREFETCH_DELAY)   # 先让当前播放站稳
+        for s in queue:
             ch = CHANNEL_MAP.get(s)
             if ch is None:
                 continue
@@ -1048,15 +1056,7 @@ def _prefetch(slugs):
                     refresh_once(ch)
             except Exception:
                 pass
-
-    def run():
-        ts = [threading.Thread(target=one)
-              for _ in range(min(PREFETCH_WORKERS, len(queue)))]
-        for t in ts:
-            t.daemon = True
-            t.start()
-        for t in ts:
-            t.join()
+            time.sleep(PREFETCH_GAP)  # 别跟视频抢连接
 
     threading.Thread(target=run, daemon=True).start()
 
@@ -1441,8 +1441,12 @@ class Spider(_BaseSpider):
         self._live_fmt = 'm3u'
 
     def init(self, extend=''):
-        global LOGO_MODE, LOGO_PREFETCH, DEFN, SEG_PROXY, SEG_MIN_RATE
+        global LOGO_MODE, LOGO_PREFETCH, DEFN, SEG_PROXY, SEG_MIN_RATE, PREFETCH_ON
         ext = _ext_json(extend)
+        pf = str(ext.get('prefetch', '')).strip().lower()
+        if pf in ('0', 'false', 'no', 'off'):
+            PREFETCH_ON = False
+            _log('换台预热已关闭')
         pv = str(ext.get('proxy', '')).strip().lower()
         if pv in ('0', 'false', 'no', 'off'):
             SEG_PROXY = False
