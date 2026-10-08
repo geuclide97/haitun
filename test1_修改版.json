@@ -395,13 +395,6 @@
       "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36"
     },
     {
-      "name": "央视频海外",
-      "playerType": 2,
-      "url": "https://ysp-live-proxy.app.workbuddy.host/all.m3u",
-      "referer": "https://tv.cctv.com/",
-      "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36"
-    },
-    {
       "name": "咪咕直播",
       "type": 0,
       "playerType": 1,
