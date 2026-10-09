@@ -144,12 +144,22 @@ def build(out_path, want_json):
         if d['url']:
             lines.append('#EXTINF:-1,' + d['name'])
             lines.append(d['url'])
+    flat = '\n'.join(lines) + '\n'
     with open(out_path, 'w', encoding='utf-8') as f:
-        f.write('\n'.join(lines) + '\n')
+        f.write(flat)
     print(f'已生成 {out_path} ({ok} 频道) @ {time.strftime("%H:%M:%S")}')
+    # 同时写英文名平铺版（订阅用，保证随 Actions 自动更新）
+    dirn = os.path.dirname(out_path)
+    en_flat = os.path.join(dirn, 'aliiptv_live.m3u')
+    with open(en_flat, 'w', encoding='utf-8') as f:
+        f.write(flat)
+    # 兼容旧中文名订阅地址（无“完整”后缀），也同步更新
+    legacy_flat = os.path.join(dirn, '超级直播海外直连.m3u')
+    with open(legacy_flat, 'w', encoding='utf-8') as f:
+        f.write(flat)
 
     # 同时生成“分组版”（若分类文件存在）
-    cat_path = os.path.join(os.path.dirname(out_path), '超级直播海外直连_分类.m3u')
+    cat_path = os.path.join(dirn, '超级直播海外直连_分类.m3u')
     groups = load_categories()
     if groups:
         clines = ['#EXTM3U']
@@ -161,12 +171,20 @@ def build(out_path, want_json):
                     clines.append(f'#EXTINF:-1 group-title="{gname}",{name}')
                     clines.append(u)
                     cok += 1
+        cat_flat = '\n'.join(clines) + '\n'
         try:
             with open(cat_path, 'w', encoding='utf-8') as f:
-                f.write('\n'.join(clines) + '\n')
+                f.write(cat_flat)
             print(f'已生成分组版 {cat_path} ({cok} 频道)')
         except Exception as e:
             print('生成分组版失败:', e)
+        # 同时写英文名分组版（订阅用，保证随 Actions 自动更新）
+        en_cat = os.path.join(dirn, 'aliiptv_categorized.m3u')
+        try:
+            with open(en_cat, 'w', encoding='utf-8') as f:
+                f.write(cat_flat)
+        except Exception as e:
+            print('生成英文名分组版失败:', e)
 
 
 if __name__ == '__main__':
