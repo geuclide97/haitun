@@ -322,7 +322,7 @@
   "wldy": {
     "name": "緯來電影台",
     "path": "wldy",
-    "url": null
+    "url": "https://play-drm.aliiptv.com/live/wldy.m3u8"
   },
   "BBCLifestyle": {
     "name": "BBC Lifestyle",

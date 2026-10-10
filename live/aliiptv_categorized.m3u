@@ -85,6 +85,8 @@ https://play-drm.aliiptv.com/live/lstime.m3u8
 https://play-drm.aliiptv.com/live/ROCKAction.m3u8
 #EXTINF:-1 group-title="电影(海外)",CINEMAX
 https://play-drm.aliiptv.com/live/cinemax.m3u8
+#EXTINF:-1 group-title="电影(海外)",緯來電影台
+https://play-drm.aliiptv.com/live/wldy.m3u8
 #EXTINF:-1 group-title="电影(海外)",CatchPlay 电影台
 https://p-drm.aliiptv.com/live/CatchPlay.m3u8
 #EXTINF:-1 group-title="影视(海外)",東森戲劇
