@@ -287,7 +287,7 @@
   "nowbg": {
     "name": "Now 爆谷台",
     "path": "nowbg",
-    "url": "https://play-drm.aliiptv.com/live/nowbg.m3u8"
+    "url": null
   },
   "channel5": {
     "name": "CHANNEL 5",
@@ -297,7 +297,7 @@
   "bgxy": {
     "name": "NOW 星影台",
     "path": "bgxy",
-    "url": "https://play-drm.aliiptv.com/live/bgxy.m3u8"
+    "url": null
   },
   "cnkt": {
     "name": "CN 卡通",
@@ -322,7 +322,7 @@
   "wldy": {
     "name": "緯來電影台",
     "path": "wldy",
-    "url": "https://play-drm.aliiptv.com/live/wldy.m3u8"
+    "url": null
   },
   "BBCLifestyle": {
     "name": "BBC Lifestyle",
@@ -342,7 +342,7 @@
   "TDMOuMun": {
     "name": "澳门澳视",
     "path": "TDMOuMun",
-    "url": "https://p-drm.aliiptv.com/live/TDMOuMun.m3u8"
+    "url": null
   },
   "LotusTV": {
     "name": "莲花卫视",
@@ -352,7 +352,7 @@
   "AMacau": {
     "name": "澳门 Macau",
     "path": "AMacau",
-    "url": "https://p-drm.aliiptv.com/live/AMacau.m3u8"
+    "url": null
   },
   "nowNews": {
     "name": "NOW 新闻台",

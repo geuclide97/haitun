@@ -113,12 +113,8 @@ https://play-drm.aliiptv.com/live/dwxq.m3u8
 https://play-drm.aliiptv.com/live/lstime.m3u8
 #EXTINF:-1,Warner TV
 https://play-drm.aliiptv.com/live/warnertv.m3u8
-#EXTINF:-1,Now 爆谷台
-https://play-drm.aliiptv.com/live/nowbg.m3u8
 #EXTINF:-1,CHANNEL 5
 https://p-drm.aliiptv.com/live/channel5.m3u8
-#EXTINF:-1,NOW 星影台
-https://play-drm.aliiptv.com/live/bgxy.m3u8
 #EXTINF:-1,CN 卡通
 https://play-drm.aliiptv.com/live/cnkt.m3u8
 #EXTINF:-1,ROCK 动作电影
@@ -127,19 +123,13 @@ https://play-drm.aliiptv.com/live/ROCKAction.m3u8
 https://play-drm.aliiptv.com/live/mtvhd.m3u8
 #EXTINF:-1,CINEMAX
 https://play-drm.aliiptv.com/live/cinemax.m3u8
-#EXTINF:-1,緯來電影台
-https://play-drm.aliiptv.com/live/wldy.m3u8
 #EXTINF:-1,BBC Lifestyle
 https://play-drm.aliiptv.com/live/BBCLifestyle.m3u8
 #EXTINF:-1,CatchPlay 电影台
 https://p-drm.aliiptv.com/live/CatchPlay.m3u8
 #EXTINF:-1,MOMO 亲子台
 https://p-drm.aliiptv.com/live/momomod.m3u8
-#EXTINF:-1,澳门澳视
-https://p-drm.aliiptv.com/live/TDMOuMun.m3u8
 #EXTINF:-1,莲花卫视
 https://play-drm.aliiptv.com/live/LotusTV.m3u8
-#EXTINF:-1,澳门 Macau
-https://p-drm.aliiptv.com/live/AMacau.m3u8
 #EXTINF:-1,NOW 新闻台
 https://play-drm.aliiptv.com/live/nowNews.m3u8

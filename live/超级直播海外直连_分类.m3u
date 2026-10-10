@@ -81,16 +81,10 @@ https://play-drm.aliiptv.com/live/dsdy.m3u8
 https://play-drm.aliiptv.com/live/hbotw.m3u8
 #EXTINF:-1 group-title="电影(海外)",龍翔時代
 https://play-drm.aliiptv.com/live/lstime.m3u8
-#EXTINF:-1 group-title="电影(海外)",Now 爆谷台
-https://play-drm.aliiptv.com/live/nowbg.m3u8
-#EXTINF:-1 group-title="电影(海外)",NOW 星影台
-https://play-drm.aliiptv.com/live/bgxy.m3u8
 #EXTINF:-1 group-title="电影(海外)",ROCK 动作电影
 https://play-drm.aliiptv.com/live/ROCKAction.m3u8
 #EXTINF:-1 group-title="电影(海外)",CINEMAX
 https://play-drm.aliiptv.com/live/cinemax.m3u8
-#EXTINF:-1 group-title="电影(海外)",緯來電影台
-https://play-drm.aliiptv.com/live/wldy.m3u8
 #EXTINF:-1 group-title="电影(海外)",CatchPlay 电影台
 https://p-drm.aliiptv.com/live/CatchPlay.m3u8
 #EXTINF:-1 group-title="影视(海外)",東森戲劇
@@ -129,12 +123,8 @@ https://p-drm.aliiptv.com/live/ViuTVsix.m3u8
 https://p-drm.aliiptv.com/live/rthktv31.m3u8
 #EXTINF:-1 group-title="港澳(海外)",港台电视32
 https://p-drm.aliiptv.com/live/rthktv32.m3u8
-#EXTINF:-1 group-title="港澳(海外)",澳门澳视
-https://p-drm.aliiptv.com/live/TDMOuMun.m3u8
 #EXTINF:-1 group-title="港澳(海外)",莲花卫视
 https://play-drm.aliiptv.com/live/LotusTV.m3u8
-#EXTINF:-1 group-title="港澳(海外)",澳门 Macau
-https://p-drm.aliiptv.com/live/AMacau.m3u8
 #EXTINF:-1 group-title="其它(海外)",新加坡8频道
 https://p-drm.aliiptv.com/live/channel8.m3u8
 #EXTINF:-1 group-title="其它(海外)",CHANNEL U
