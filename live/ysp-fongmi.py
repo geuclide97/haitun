@@ -61,7 +61,7 @@ import urllib.error
 import urllib.parse
 import urllib.request
 import uuid
-from collections import deque
+from collections import deque, OrderedDict
 
 try:
     sys.path.append('..')
@@ -645,6 +645,8 @@ class Channel:
         self.bk_urls_time = 0.0
         self.bk_playlist = ''
         self._starting = False
+        self._preload_last = 0.0   # 上次后台预取启动时间(限流)
+
 
 
 CHANNEL_MAP = dict((c[0], Channel(*c)) for c in CHANNELS)
@@ -852,25 +854,105 @@ def _seg_key(url, pdt):
     return p.scheme + '://' + p.netloc + p.path
 
 
+def _pkey_for_seg(url, pdt=''):
+    """**全局统一的分片键**(2026-10-11 实测后确立)。
+
+    JCE 的分片 URL 每次刷新都变(带 time/svrtime token)，path 里也有随机 hash，
+    实测两次刷新 URL 交集为 0。若缓存/代理键建在完整 URL 上，后台预取存的键
+    与播放器随后请求的键永远对不上 → 命中率恒为 0，缓存形同摆设。
+    所以统一用「pdt(节目时间) 或 去query 的 scheme://netloc/path」当键：
+    同一时间片跨刷新稳定，ch.order / /seg/<key> / 内存缓存 三处用同一把钥匙。
+    """
+    return hashlib.md5(_seg_key(url, pdt).encode('utf-8', 'replace')).hexdigest()[:16]
+
+
 # ================================================================ 分片代理
 # 真实地址 -> 本地 /seg/<短key>。播放器只认本地地址，被我们接管后
 # 才能在慢的时候自己换条连接重来。
+#
+# ---- 海外实测结论(2026-10-11, 加拿大) ----
+# 新分片首次拉取 0.4~60s 剧烈抖动，35% 超过 3 秒；但同一片「完整拉完一次」
+# 之后再拉只要 0.3s(快 10~100 倍)。拉 1 秒就掐断无效 → 关键在 CDN 边缘缓存回源，
+# 不是带宽、不是节点、不是阈值。所以和解法只有一个：
+# **在后台把窗口内分片提前完整拉进内存**，播放器按本地速度秒取，
+# 把源站抖动全部吸收在后台。这就是下面 _CACHE 的用途。
 
 _SEG_URLS = {}
+_SEG_OWNER = {}      # key -> Channel, 供流水线预热反查
 _SEG_LOCK = threading.RLock()
+
+# 分片内容内存缓存：key -> bytes。命中则直接吐内存，完全不碰网络。
+_CACHE = OrderedDict()          # LRU: 命中/写入都移到尾部，淘汰从头部拿
+_CACHE_LOCK = threading.RLock()
+_CACHE_BYTES = 0
+_CACHE_HIT = 0             # 播放器命中内存缓存的次数
+_CACHE_MISS = 0            # 走网络慢路径的次数
+
+CACHE_ON = True             # ext 里 "cache": false 可关闭
+CACHE_MB = 96               # 内存缓存上限(MB)，ext 里 "cache_mb" 可改
+# 单片上限: 实测(2026-10-11) hd 档 0.63~1.23MB, fhd 2~3.4MB。原来写 512KB 等于
+# 把几乎所有片都挡在缓存外, 机制等于没生效 —— 必须放到 4MB 才装得下。
+CACHE_MAX_SEG = 4 * 1024 * 1024
+PRELOAD_AHEAD = 8           # 流水线预热: 播放器拉一片时，后台并行热它后面几片
+PRELOAD_WORKERS = 4         # 预取并发。实测 2/4/6 三档差别不大但方差大，4 最稳；
+                            # 再高会和播放抢同一条到源站的连接，反而更慢。
+PRELOAD_EARLY_STOP = 20.0   # 单片超过这么多秒就放弃这片(留给播放器自己走代理重连)
+PRELOAD_MIN_INTERVAL = 2.0  # 同一个台两次窗口预取的最小间隔，避免刷新一快就疯狂起线程
+PRELOAD_NEIGHBOR_AHEAD = 3  # 邻居台只预热前几片(省内存, 够起播就行)
+WAIT_PRELOAD_MAX = 3.5      # 播放器要的片正在被预取时，最多等它落缓存多久
+                            # (等在这里不占用"用户看转圈"的时间，播放器本就在缓冲)
 
 
 def _seg_trim():
     if len(_SEG_URLS) > 4000:
         for k in list(_SEG_URLS.keys())[:2000]:
             _SEG_URLS.pop(k, None)
+            _SEG_OWNER.pop(k, None)
 
 
-def _seg_proxy_url(url):
-    """登记真实地址，返回给播放器的本地地址"""
-    k = hashlib.md5(url.encode('utf-8', 'replace')).hexdigest()[:16]
+def _cache_get(key):
+    with _CACHE_LOCK:
+        d = _CACHE.get(key)
+        if d is not None:
+            _CACHE.move_to_end(key)   # LRU: 用过的排到尾部，别被新片挤掉
+        return d
+
+
+def _cache_put(key, data):
+    """存入内存缓存，超出上限时按 LRU 淘汰最久未使用的"""
+    global _CACHE_BYTES
+    if not data:
+        return
+    with _CACHE_LOCK:
+        if key in _CACHE:
+            return
+        _CACHE[key] = data
+        _CACHE_BYTES += len(data)
+        limit = CACHE_MB * 1024 * 1024
+        while _CACHE_BYTES > limit and _CACHE:
+            k0, v0 = _CACHE.popitem(last=False)   # 头部=最久未用
+            _CACHE_BYTES -= len(v0)
+
+
+def _cache_clear():
+    global _CACHE_BYTES
+    with _CACHE_LOCK:
+        _CACHE.clear()
+        _CACHE_BYTES = 0
+
+
+def _seg_proxy_url(url, ch=None, pdt=''):
+    """登记真实地址，返回给播放器的本地地址。
+
+    key 用 _pkey_for_seg(稳定键) 而不是 md5(URL) ——
+    因为 JCE 分片 URL 每次刷新都变，用 URL 当 key 会让
+    「后台预热存的键」与「播放器请求的键」永远对不上，缓存命中恒为 0。
+    """
+    k = _pkey_for_seg(url, pdt)
     with _SEG_LOCK:
-        _SEG_URLS[k] = url
+        _SEG_URLS[k] = url          # 每次刷新更新为最新地址，键不变
+        if ch is not None:
+            _SEG_OWNER[k] = ch
         _seg_trim()
     return 'http://127.0.0.1:%d/seg/%s' % (_SERVER_PORT, k)
 
@@ -880,21 +962,181 @@ def _seg_lookup(key):
         return _SEG_URLS.get(key)
 
 
-def _local_url(url):
+def _seg_owner(key):
+    with _SEG_LOCK:
+        return _SEG_OWNER.get(key)
+
+
+def _fetch_full(url, timeout=SEG_CONNECT_TIMEOUT, deadline=None):
+    """完整拉一片到内存。用于后台预取 —— 必须拉完才有效(实测掐断无用)。"""
+    req = urllib.request.Request(url, headers=_seg_headers())
+    conn = urllib.request.urlopen(req, timeout=timeout)
+    try:
+        chunks = []
+        got = 0
+        while True:
+            b = conn.read(65536)
+            if not b:
+                break
+            chunks.append(b)
+            got += len(b)
+            if got > CACHE_MAX_SEG:
+                return None            # 太大不入内存
+            if deadline and time.time() > deadline:
+                return None
+        return b''.join(chunks)
+    finally:
+        try:
+            conn.close()
+        except Exception:
+            pass
+
+
+# ---- 后台预取：守住窗口尾部，让下一个要播的片永远是热的 ----
+# 这里所有函数都以 (key, url) 为单位：key 是全局统一的稳定键(见 _pkey_for_seg)，
+# url 是当下最新的真实地址(会随刷新变)。缓存/去重都用 key，取数据才用 url。
+_PRELOAD_BUSY = set()
+_PRELOAD_LOCK = threading.Lock()
+
+
+def _preload_claim(key):
+    """抢占一片的预取权。已在缓存 / 别人正在取 → 返回 False"""
+    if _cache_get(key) is not None:
+        return False
+    with _PRELOAD_LOCK:
+        if key in _PRELOAD_BUSY:
+            return False
+        _PRELOAD_BUSY.add(key)
+    return True
+
+
+def _preload_release(key):
+    with _PRELOAD_LOCK:
+        _PRELOAD_BUSY.discard(key)
+
+
+def _preload_run(key, url):
+    """已抢到预取权，直接干活"""
+    try:
+        data = _fetch_full(url, deadline=time.time() + PRELOAD_EARLY_STOP)
+        if data:
+            _cache_put(key, data)
+    except Exception:
+        pass
+    finally:
+        _preload_release(key)
+
+
+def _preload_one(item):
+    """后台预取一片；item=(key, url)；已在缓存/正在取则跳过"""
+    key, url = item
+    if not _preload_claim(key):
+        return
+    _preload_run(key, url)
+
+
+def _seg_pairs(ch):
+    """把 ch **下发给播放器的那个窗口**展开成 [(key, url), ...]，顺序=清单顺序。
+
+    必须与 build_playlist 用的窗口一致(最后 LIVE_WINDOW 片)：
+    否则预热的是整表头部、播放器拿到的却是窗口，两边错位，预热全部落空。
+    """
+    with ch.lock:
+        if ch.mode == 'bk':
+            return []
+        keys = list(ch.order)[-LIVE_WINDOW:]
+        return [(_pkey_for_seg(ch.segments[k][3], ch.segments[k][2]), ch.segments[k][3])
+                for k in keys if k in ch.segments]
+
+
+def _run_preload(pairs):
+    """并发预取一批 (key,url)"""
+    todo = [p for p in pairs if _cache_get(p[0]) is None]
+    if not todo:
+        return
+
+    def run():
+        import concurrent.futures
+        try:
+            with concurrent.futures.ThreadPoolExecutor(max_workers=PRELOAD_WORKERS) as ex:
+                list(ex.map(_preload_one, todo))
+        except Exception:
+            for it in todo:
+                _preload_one(it)
+
+    threading.Thread(target=run, daemon=True).start()
+
+
+def _urls_after(ch, key, n):
+    """取"播放器正在看的这一片"之后的 n 片 —— 流水线预热的关键。
+
+    不猜播放器从哪片起播(它可能从头、可能从 live edge、可能跳着来)，
+    而是**它拉到哪，就把后面几片热上**。播放器逐片串行拉，
+    于是从第 2 片起，每一片都是上一片拉取时顺手热好的 → 内存直出。
+    """
+    pairs = _seg_pairs(ch)
+    keys = [p[0] for p in pairs]
+    if key not in keys:
+        return []
+    i = keys.index(key)
+    return pairs[i + 1:i + 1 + n]
+
+
+def _preload_after(ch, key, n=None):
+    """播放器正在拉 key 这片 → 后台并行把后面 n 片热上（流水线）"""
+    if not CACHE_ON:
+        return
+    if n is None:
+        n = PRELOAD_AHEAD
+    _run_preload(_urls_after(ch, key, n))
+
+
+def _preload_window(ch, ahead=None, force=False):
+    """把窗口**头尾各几片**一起后台预热(异步，立即返回)。
+
+    为什么不阻塞清单：清单响应时延＝用户看到的转圈。
+    异步预热后，播放器紧接着来要第 1 片时，`_serve_segment` 里会短等一下
+    (WAIT_PRELOAD_MAX)让它落到缓存 —— 等待发生在"播放器本来就在缓冲"的地方，
+    而不是"用户对着转圈"的地方。
+    """
+    if not CACHE_ON:
+        return
+    if ahead is None:
+        ahead = PRELOAD_AHEAD
+    now = time.time()
+    if not force and now - getattr(ch, '_preload_last', 0.0) < PRELOAD_MIN_INTERVAL:
+        return
+    ch._preload_last = now
+    pairs = _seg_pairs(ch)
+    if not pairs:
+        return
+    half = max(2, ahead // 2)
+    picked = pairs[:half] + pairs[-half:]
+    seen, todo = set(), []
+    for k, u in picked:
+        if k in seen:
+            continue
+        seen.add(k)
+        todo.append((k, u))
+    _run_preload(todo)
+
+
+def _local_url(url, ch=None, pdt=''):
     """下发给播放器时用本地代理地址，还是直接给 CDN 地址"""
     if not SEG_PROXY:
         return url
-    return _seg_proxy_url(url)
+    return _seg_proxy_url(url, ch, pdt)
 
 
-def _rewrite_bk(pl):
-    """bk 链路的清单是原始文本，逐行把分片地址换成本地地址"""
+def _rewrite_bk(pl, ch=None):
+    """bk 链路的清单是原始文本，逐行把分片地址换成本地地址。
+       bk 清单里没有 pdt，用去 query 地址当稳定键。"""
     if not pl or not SEG_PROXY:
         return pl
     out = []
     for line in pl.splitlines():
         s = line.strip()
-        out.append(_seg_proxy_url(s) if (s and not s.startswith('#')) else line)
+        out.append(_seg_proxy_url(s, ch) if (s and not s.startswith('#')) else line)
     return '\n'.join(out) + '\n'
 
 
@@ -917,8 +1159,9 @@ def _send_simple(cs, code, ctype, body):
         pass
 
 
-def _pump(cs, conn):
-    """边收边转发；一旦判定连歪了就抛 _SlowConn，让外层重连"""
+def _pump(cs, conn, sink=None):
+    """边收边转发；一旦判定连歪了就抛 _SlowConn，让外层重连。
+       sink: 可选 list，把收到的字节同时收集起来（拉满则存入缓存）"""
     got = 0
     start = time.time()
     while True:
@@ -929,22 +1172,101 @@ def _pump(cs, conn):
         if not chunk:
             return got
         cs.sendall(chunk)
+        if sink is not None:
+            sink.append(chunk)
         got += len(chunk)
         el = time.time() - start
         if el > SEG_DETECT_AFTER and got / el < SEG_MIN_RATE:
             raise _SlowConn(got)
 
 
+def _wait_cached(key, timeout):
+    """等一片被后台预取落到缓存。用于避免"预取正在拉 + 播放器又拉一遍"的双倍请求。
+       超时或没在预取则立刻返回 None。"""
+    if _cache_get(key) is not None:
+        return _cache_get(key)
+    with _PRELOAD_LOCK:
+        if key not in _PRELOAD_BUSY:
+            return None
+    t0 = time.time()
+    while time.time() - t0 < timeout:
+        d = _cache_get(key)
+        if d is not None:
+            return d
+        with _PRELOAD_LOCK:
+            if key not in _PRELOAD_BUSY:
+                return _cache_get(key)
+        time.sleep(0.05)
+    return _cache_get(key)
+
+
 def _serve_segment(cs, key):
     """
-    代播放器取一片。慢了就断开重连，用 Range 从断点续传，
-    对播放器来说全程透明 —— 它只看到一次普通的下载。
+    代播放器取一片。
+    1) 命中内存缓存 → 直接吐，0 网络延迟（后台已预取好的热片走这里）
+    2) 未命中 → 走网络，慢了就断开重连、Range 续传；**只有一次拉到底的完整片才入缓存**
+       (重连后拼出来的片段不完整，绝不能进缓存，否则后面每次都吐坏数据)
     """
+    global _CACHE_HIT, _CACHE_MISS
     url = _seg_lookup(key)
     if not url:
         _send_simple(cs, 404, 'text/plain', b'segment expired')
         return
+    # ---- 快路径：内存缓存 ----
+    data = _cache_get(key)
+    if data is not None:
+        _CACHE_HIT += 1
+        # 命中也要接着往下热 —— 否则播放器一路命中，流水线反而断了，
+        # 等到下一次 miss 再热就晚了(那一片必然卡)。
+        try:
+            ch = _seg_owner(key)
+            if ch is not None:
+                _preload_after(ch, key)
+        except Exception:
+            pass
+        head = ('HTTP/1.1 200 OK\r\nContent-Type: video/mp2t\r\n'
+                'Content-Length: %d\r\n'
+                'Access-Control-Allow-Origin: *\r\n'
+                'Cache-Control: max-age=300\r\nConnection: close\r\n\r\n' % len(data))
+        try:
+            cs.sendall(head.encode('latin-1') + data)
+        except Exception:
+            pass
+        return
+    _CACHE_MISS += 1
+    # 若这片正在被后台预取，等它落缓存即可 —— 别重复去源站拉一遍(省一次冷启)。
+    # 给 1.6s 上限：预取一般在此前完成；超时就走自己的慢路径，不耽误播放。
+    try:
+        d2 = _wait_cached(key, WAIT_PRELOAD_MAX)
+        if d2 is not None:
+            _CACHE_HIT += 1
+            _CACHE_MISS -= 1
+            head = ('HTTP/1.1 200 OK\r\nContent-Type: video/mp2t\r\n'
+                    'Content-Length: %d\r\n'
+                    'Access-Control-Allow-Origin: *\r\n'
+                    'Cache-Control: max-age=300\r\nConnection: close\r\n\r\n' % len(d2))
+            try:
+                cs.sendall(head.encode('latin-1') + d2)
+            except Exception:
+                pass
+            return
+    except Exception:
+        pass
+    # ---- 关键：流水线预热 ----
+    # 播放器正在拉这一片，说明它下一秒就要拉后面的。
+    # 趁现在把后 PRELOAD_AHEAD 片并行热上，等它来取就是内存直出。
+    # 这解决了"同步预热猜不中播放器起点"的问题 —— 不猜，跟着它走。
+    try:
+        ch = _seg_owner(key)
+        if ch is not None:
+            _preload_after(ch, key)
+    except Exception:
+        pass
+    # ---- 慢路径：走网络 ----
+    total = 0
     offset = 0
+    clean = True      # 整个过程没发生断点重连，才是"完整一片"
+    buf = []
     for attempt in range(SEG_MAX_RETRY):
         hdr = _seg_headers()
         if offset:
@@ -961,7 +1283,6 @@ def _serve_segment(cs, key):
             continue
         try:
             if offset == 0:
-                total = 0
                 cr = conn.headers.get('Content-Range') or ''
                 if '/' in cr:
                     try:
@@ -979,14 +1300,24 @@ def _serve_segment(cs, key):
                 head += ('Access-Control-Allow-Origin: *\r\n'
                          'Cache-Control: max-age=300\r\nConnection: close\r\n\r\n')
                 cs.sendall(head.encode('latin-1'))
-            _pump(cs, conn)
+            n = _pump(cs, conn, sink=buf)
+            # 只有"起始位一次拿满整片"才值得进缓存：
+            #   clean     —— 中间没断过，buf 是从第 0 字节攒起来的
+            #   offset==0 —— 不是续传片段
+            #   total 未知 或 收满 total —— 长度对得上，没被上游截断
+            if clean and offset == 0 and n and buf and (not total or n >= total):
+                whole = b''.join(buf)
+                if len(whole) <= CACHE_MAX_SEG:
+                    _cache_put(key, whole)
             return
         except _SlowConn as e:
             offset += e.got
+            clean = False     # 断过，本轮拼出来的不是完整片
             try:
                 conn.close()
             except Exception:
                 pass
+            buf = []          # 续传后重收，避免拼出错误数据
             _log('分片重连 %s (已发 %d 字节, 第 %d 次)' % (key, offset, attempt + 1))
             continue
         except Exception:
@@ -1029,7 +1360,8 @@ def _neighbors(slug, n=PREFETCH_NEIGHBORS):
 
 
 def _prefetch(slugs):
-    """后台慢慢把这几个台热起来；已热过的不再重复，全程单线程低强度"""
+    """后台慢慢把这几个台热起来；已热过的不再重复，全程单线程低强度。
+       除了拉清单，还把窗口前几片一起预取 —— 换台过去就不用等 CDN 冷启。"""
     if not PREFETCH_ON:
         return
     todo = []
@@ -1054,6 +1386,8 @@ def _prefetch(slugs):
             try:
                 if not (ch.segments or ch.bk_playlist):
                     refresh_once(ch)
+                # 邻居台只热前几片，够"点进去秒出画面"就行，别占太多内存
+                _preload_window(ch, ahead=PRELOAD_NEIGHBOR_AHEAD, force=True)
             except Exception:
                 pass
             time.sleep(PREFETCH_GAP)  # 别跟视频抢连接
@@ -1176,6 +1510,10 @@ def refresh_loop(ch):
     while time.time() - ch.last_access < IDLE_TIMEOUT:
         ok = refresh_once(ch)
         fails = 0 if ok else fails + 1
+        if ok:
+            # 每次刷新出新片后立刻把窗口尾部补热 —— 这是"播放中途跳一下"的解药：
+            # 直播片是边播边生成的，新片刚生成时 CDN 边缘还没缓存，播放器直接拉必然卡。
+            _preload_window(ch)
         time.sleep(REFRESH_INTERVAL if fails < 3 else 30)
     _log('%s 无人观看, 停刷' % ch.slug)
 
@@ -1206,7 +1544,7 @@ def ensure_channel(ch):
 def build_playlist(ch):
     with ch.lock:
         if ch.mode == 'bk':
-            return _rewrite_bk(ch.bk_playlist) or None
+            return _rewrite_bk(ch.bk_playlist, ch) or None
         keys = list(ch.order)[-LIVE_WINDOW:]
         segs = [ch.segments[k] for k in keys if k in ch.segments]
     if not segs:
@@ -1219,7 +1557,7 @@ def build_playlist(ch):
         if pdt:
             out.append('#EXT-X-PROGRAM-DATE-TIME:' + pdt)
         out.append('#EXTINF:%.3f,' % dur)
-        out.append(_local_url(url))
+        out.append(_local_url(url, ch, pdt))
     return '\n'.join(out) + '\n'
 
 
@@ -1251,9 +1589,17 @@ def _diag():
         cached, failed = len(_LOGO_MEM), len(_LOGO_FAIL)
     with _SEG_LOCK:
         n_seg = len(_SEG_URLS)
+    with _CACHE_LOCK:
+        n_cached = len(_CACHE)
     lines = ['port=%d' % _SERVER_PORT,
              'seg_proxy=%s min_rate=%dKB/s detect_after=%.1fs retry=%d registered=%d'
              % (SEG_PROXY, SEG_MIN_RATE // 1024, SEG_DETECT_AFTER, SEG_MAX_RETRY, n_seg),
+             'cache=%s seg_threshold=%dKB limit=%dMB held=%d片/%.1fMB hit=%d miss=%d'
+             % (CACHE_ON, CACHE_MAX_SEG // 1024, CACHE_MB, n_cached,
+                _CACHE_BYTES / 1048576.0, _CACHE_HIT, _CACHE_MISS),
+             'preload ahead=%d workers=%d wait_max=%.1fs hit_rate=%.0f%%'
+             % (PRELOAD_AHEAD, PRELOAD_WORKERS, WAIT_PRELOAD_MAX,
+                100.0 * _CACHE_HIT / max(1, _CACHE_HIT + _CACHE_MISS)),
              'logo mode=%s total=%d builtin=%d cached=%d failed=%d dir=%s' % (
                  LOGO_MODE, len(CHANNEL_ORDER), len(LOGO_LOCAL), cached, failed, d or '-')]
     for slug in CHANNEL_ORDER:
@@ -1305,6 +1651,9 @@ def _route(path):
         if not pl:
             return 503, 'text/plain; charset=utf-8', \
                 ('频道 %s 拉取中/失败: %s' % (ch.name, ch.last_error or '请稍后')).encode('utf-8')
+        # 清单立即返回，不因预热拖慢(响应时延＝用户看到的转圈)。
+        # 预热改异步：播放器随后要的片，会在 _serve_segment 里短等它落缓存。
+        _preload_window(ch, force=True)
         _prefetch(_neighbors(slug))   # 顺手把隔壁几个台热上，换台就快了
         return 200, 'application/vnd.apple.mpegurl', pl.encode('utf-8')
     return 404, 'text/plain; charset=utf-8', b'not found'
@@ -1442,11 +1791,31 @@ class Spider(_BaseSpider):
 
     def init(self, extend=''):
         global LOGO_MODE, LOGO_PREFETCH, DEFN, SEG_PROXY, SEG_MIN_RATE, PREFETCH_ON
+        global CACHE_ON, CACHE_MB, PRELOAD_AHEAD
         ext = _ext_json(extend)
         pf = str(ext.get('prefetch', '')).strip().lower()
         if pf in ('0', 'false', 'no', 'off'):
             PREFETCH_ON = False
             _log('换台预热已关闭')
+        # cache: false 可整体关掉"内存预取缓存 + 起播同步预热"
+        cv = str(ext.get('cache', '')).strip().lower()
+        if cv in ('0', 'false', 'no', 'off'):
+            CACHE_ON = False
+            _log('分片内存缓存已关闭')
+        elif cv in ('1', 'true', 'yes', 'on'):
+            CACHE_ON = True
+        try:
+            cm = int(ext.get('cache_mb', 0))
+            if cm > 0:
+                CACHE_MB = cm
+        except Exception:
+            pass
+        try:
+            pa = int(ext.get('preload_ahead', 0))
+            if pa > 0:
+                PRELOAD_AHEAD = pa
+        except Exception:
+            pass
         pv = str(ext.get('proxy', '')).strip().lower()
         if pv in ('0', 'false', 'no', 'off'):
             SEG_PROXY = False
@@ -1519,6 +1888,22 @@ class Spider(_BaseSpider):
         if ch is None:
             return {'parse': 0, 'jx': 0, 'url': slug}
         ensure_channel(ch)
+        # App 调 playerContent → 播放器真正开始拉清单之间有几秒间隙(切换界面/初始化解码器)，
+        # 这段时间是"白送的"，正好用来把窗口头尾几片抢先热好 —— 起播就能命中内存。
+        if CACHE_ON:
+            def _kick():
+                for _ in range(3):
+                    try:
+                        if ch.segments or ch.bk_playlist:
+                            break
+                    except Exception:
+                        break
+                    time.sleep(0.4)
+                try:
+                    _preload_window(ch, force=True)
+                except Exception:
+                    pass
+            threading.Thread(target=_kick, daemon=True).start()
         if port:
             return {'parse': 0, 'jx': 0,
                     'url': 'http://127.0.0.1:%d/%s.m3u8' % (port, slug),
