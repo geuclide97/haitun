@@ -427,9 +427,9 @@ def _ck_guard(ts, guid):
 
 def _ckey(channel_id):
     ts = int(time.time())
-    guid = os.urandom(16).hex()
+    guid = _GUID
     guard = _ck_guard(ts, guid)
-    uid = os.urandom(4).hex().upper()
+    uid = _UID
     body = (bytes.fromhex('0000004200000004000004d2') + struct.pack('>I', _CK_PLATFORM)
             + struct.pack('>I', 0) + struct.pack('>I', ts) + _lp('dcgh')
             + _lp('_zj1A5Gh6QYcxWjIUGos2w==') + _lp(_CK_APPVER) + _lp(str(channel_id))
@@ -453,8 +453,26 @@ def _b64url(raw):
 
 _BK_H264 = _b64url(b'H(30:1080,60:1080|30:1080,60:1080)')
 
+# ---- 设备指纹：进程内固定，被风控时才轮换 ----
+# **2026-10-11 实测(血泪)**：原实现每次 bk_playurls 都 os.urandom 生成新 guid/uid，
+# 等于每次都冒充一台"全新设备"。央视频按 IP 统计新设备数，短时间内几十台新设备
+# 立即触发风控 → iretcode=25 无登录信息，地址全部作废(实测 26/27 次 403)。
+# 真实 App 的 guid 是设备固定的。固定后同一台"设备"配额稳定，不再触发新设备风暴。
+_GUID = os.urandom(16).hex()
+_UID = os.urandom(4).hex().upper()
+_GUID_LOCK = threading.Lock()
 
-def bk_playurls(channel_id, live_pid, defn='fhd'):
+
+def _rotate_guid():
+    """被风控(iretcode=25/400)时换一台"设备"，模拟 App 的轮换行为"""
+    global _GUID, _UID
+    with _GUID_LOCK:
+        _GUID = os.urandom(16).hex()
+        _UID = os.urandom(4).hex().upper()
+    _log('bk 设备指纹已轮换(疑似风控)')
+
+
+def bk_playurls(channel_id, live_pid, defn='fhd', retried=False):
     t = _ckey(channel_id)
     q = urllib.parse.urlencode({
         'atime': '120', 'livepid': live_pid, 'cnlid': channel_id,
@@ -473,8 +491,13 @@ def bk_playurls(channel_id, live_pid, defn='fhd'):
                                  headers={'User-Agent': 'qqlive', 'Accept': 'application/json'})
     with urllib.request.urlopen(req, timeout=15) as r:
         p = json.loads(r.read().decode())
-    if int(p.get('iretcode', -1)) != 0:
-        raise RuntimeError('iretcode=%s %s' % (p.get('iretcode'), p.get('errinfo', '')))
+    code = int(p.get('iretcode', -1))
+    if code != 0:
+        # 风控特征码: 25=无登录信息, 400=设备配额 → 换一台"设备"重试一次
+        if code in (25, 400) and not retried:
+            _rotate_guid()
+            return bk_playurls(channel_id, live_pid, defn, retried=True)
+        raise RuntimeError('iretcode=%s %s' % (code, p.get('errinfo', '')))
     urls = []
     if p.get('playurl'):
         urls.append(p['playurl'])
@@ -644,6 +667,8 @@ class Channel:
         self.bk_urls = []
         self.bk_urls_time = 0.0
         self.bk_playlist = ''
+        self.bk_lock = threading.Lock()   # bk 换源互斥(选源探测可能耗时数秒)
+        self._bk_heal_last = 0.0          # 上次"分片403自愈"触发时间(节流)
         self._starting = False
         self._preload_last = 0.0   # 上次后台预取启动时间(限流)
 
@@ -1304,6 +1329,24 @@ def _serve_segment(cs, key):
             conn = urllib.request.urlopen(
                 urllib.request.Request(url, headers=hdr),
                 timeout=SEG_CONNECT_TIMEOUT)
+        except urllib.error.HTTPError as e:
+            # bk 兜底链路分片 403 → 当前源坏了。后台触发一次换源自愈
+            # (bk_refresh 会用分片探测跳过坏源)，本次先回 502，播放器重试即可。
+            # 节流：10s 内同一频道只触发一次，避免风暴。
+            if url and 'bkoutlivecloud' in url:
+                try:
+                    ch0 = _seg_owner(key)
+                    if ch0 is not None and time.time() - getattr(ch0, '_bk_heal_last', 0) > 10:
+                        ch0._bk_heal_last = time.time()
+                        _log('%s 分片403, 触发换源自愈' % ch0.slug)
+                        threading.Thread(target=refresh_once, args=(ch0,), daemon=True).start()
+                except Exception:
+                    pass
+            if attempt == 0:
+                _send_simple(cs, 502, 'text/plain',
+                             ('upstream: HTTP %s' % e.code).encode('utf-8', 'replace'))
+                return
+            continue
         except Exception as e:
             if attempt == 0:
                 _send_simple(cs, 502, 'text/plain',
@@ -1480,11 +1523,44 @@ def jce_refresh(ch):
     return True
 
 
+def _bk_seg_ok(pl):
+    """bk 源可达性探测: 清单里第一个分片真能取到吗(读 64KB 即可)。
+
+    **实测(2026-10-11)**: bkliveinfo 常给出 2 个源, 其中部分源「清单能拉、
+    分片却 403」。旧逻辑"清单能拉就用"会锁死在坏源上(最长 BK_URL_TTL=300s),
+    播放器全程报 bad http status —— 用户报的风云/第一/怀旧剧场就是这种。
+    """
+    for line in pl.splitlines():
+        s = line.strip()
+        if s and not s.startswith('#'):
+            try:
+                r = urllib.request.urlopen(
+                    urllib.request.Request(s, headers=_seg_headers(s)), timeout=8)
+                r.read(65536)
+                r.close()
+                return True
+            except Exception:
+                return False
+    return False
+
+
 def bk_refresh(ch):
+    # 换源探测一源可能耗时数秒, 用独立锁防止 refresh_loop 与播放请求并发进来
+    with ch.bk_lock:
+        return _bk_refresh_locked(ch)
+
+
+BK_FAIL_BACKOFF = 120     # bk 风控失败后的退避秒数(别持续施压接口, 让它更快冷却)
+
+
+def _bk_refresh_locked(ch):
     now = time.time()
+    if now < getattr(ch, '_bk_fail_until', 0):
+        raise RuntimeError('bk 风控退避中(%ds)' % int(ch._bk_fail_until - now))
     if now - ch.bk_urls_time > BK_URL_TTL or not ch.bk_urls:
         ch.bk_urls = bk_playurls(ch.sid, ch.pid, ch.defn)
         ch.bk_urls_time = now
+        ch._bk_fail_until = 0
         _log('%s bkliveinfo 拿到 %d 个地址' % (ch.slug, len(ch.bk_urls)))
     last_err = ''
     for attempt in range(2):
@@ -1492,6 +1568,11 @@ def bk_refresh(ch):
             try:
                 pl = fetch_abs_playlist(u)
                 if '#EXTM3U' not in pl:
+                    continue
+                if not _bk_seg_ok(pl):
+                    # 清单能拉但分片 403 → 坏源, 换下一个(这是"bad http status"的根因)
+                    last_err = 'seg 403 (bad source)'
+                    _log('%s 源分片不可取, 换下一个' % ch.slug)
                     continue
                 with ch.lock:
                     ch.bk_playlist = pl
@@ -1511,6 +1592,7 @@ def bk_refresh(ch):
             except Exception:
                 pass
     ch.bk_urls_time = 0
+    ch._bk_fail_until = time.time() + BK_FAIL_BACKOFF   # 风控退避: 期间别再打接口
     raise RuntimeError(last_err[:120] or 'bk playlist failed')
 
 
