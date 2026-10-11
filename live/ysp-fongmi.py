@@ -847,23 +847,33 @@ def _logo_prefetch_run():
     _log('台标就绪 %d/%d' % (ok, len(CHANNEL_ORDER)))
 
 
-def _seg_key(url, pdt):
-    if pdt:
-        return 'pdt:' + pdt
-    p = urllib.parse.urlsplit(url)
-    return p.scheme + '://' + p.netloc + p.path
+def _seg_key(url, pdt, slug=''):
+    """频道内分片的**稳定标识**。
 
-
-def _pkey_for_seg(url, pdt=''):
-    """**全局统一的分片键**(2026-10-11 实测后确立)。
-
-    JCE 的分片 URL 每次刷新都变(带 time/svrtime token)，path 里也有随机 hash，
-    实测两次刷新 URL 交集为 0。若缓存/代理键建在完整 URL 上，后台预取存的键
-    与播放器随后请求的键永远对不上 → 命中率恒为 0，缓存形同摆设。
-    所以统一用「pdt(节目时间) 或 去query 的 scheme://netloc/path」当键：
-    同一时间片跨刷新稳定，ch.order / /seg/<key> / 内存缓存 三处用同一把钥匙。
+    slug 必须带上！(2026-10-11 血泪) pdt 只是节目时间(如 2026-10-12T05:24:19+08:00)，
+    **不含频道信息** —— 各频道同一秒的片 pdt 完全相同(实测 8 个频道 194 片里
+    104 片 pdt 重合，53.6%)。若键里不带 slug，/seg/<key> 会被后刷新的频道覆盖，
+    播放器点 A 台放出来的是 B 台的画面(实测串台就是这个原因)。
     """
-    return hashlib.md5(_seg_key(url, pdt).encode('utf-8', 'replace')).hexdigest()[:16]
+    if pdt:
+        return '%s|%s' % (slug, pdt)
+    p = urllib.parse.urlsplit(url)
+    return '%s|%s://%s%s' % (slug, p.scheme, p.netloc, p.path)
+
+
+def _pkey_for_seg(url, pdt='', slug=''):
+    """**全局统一的分片键**。
+
+    两个约束同时满足(均实测)：
+    1. 跨刷新要稳定 —— JCE 的分片 URL 每次刷新都带新 time/svrtime token 和
+       随机 path hash，实测两次刷新 URL 交集为 0。若用 md5(完整URL) 当键，
+       后台预取存的键与播放器随后请求的键永远对不上 → 命中率恒为 0。
+       所以键建立在 pdt 或"去 query 的地址"上。
+    2. 跨频道不能撞 —— pdt 不含频道，必须把 slug 编进键里，否则串台。
+
+    ch.order / /seg/<key> / 内存缓存 三处共用这一把钥匙。
+    """
+    return hashlib.md5(_seg_key(url, pdt, slug).encode('utf-8', 'replace')).hexdigest()[:16]
 
 
 # ================================================================ 分片代理
@@ -941,14 +951,20 @@ def _cache_clear():
         _CACHE_BYTES = 0
 
 
+def _slug_of_ch(ch):
+    """取频道 slug；ch 为 None 时返回空串(键里就没有频道前缀，退化为旧行为)"""
+    return getattr(ch, 'slug', '') or ''
+
+
 def _seg_proxy_url(url, ch=None, pdt=''):
     """登记真实地址，返回给播放器的本地地址。
 
     key 用 _pkey_for_seg(稳定键) 而不是 md5(URL) ——
     因为 JCE 分片 URL 每次刷新都变，用 URL 当 key 会让
     「后台预热存的键」与「播放器请求的键」永远对不上，缓存命中恒为 0。
+    且必须带上频道(slug)，否则各频道同一秒的片会撞成同一个 key 而串台。
     """
-    k = _pkey_for_seg(url, pdt)
+    k = _pkey_for_seg(url, pdt, _slug_of_ch(ch))
     with _SEG_LOCK:
         _SEG_URLS[k] = url          # 每次刷新更新为最新地址，键不变
         if ch is not None:
@@ -969,7 +985,7 @@ def _seg_owner(key):
 
 def _fetch_full(url, timeout=SEG_CONNECT_TIMEOUT, deadline=None):
     """完整拉一片到内存。用于后台预取 —— 必须拉完才有效(实测掐断无用)。"""
-    req = urllib.request.Request(url, headers=_seg_headers())
+    req = urllib.request.Request(url, headers=_seg_headers(url))
     conn = urllib.request.urlopen(req, timeout=timeout)
     try:
         chunks = []
@@ -1045,7 +1061,8 @@ def _seg_pairs(ch):
         if ch.mode == 'bk':
             return []
         keys = list(ch.order)[-LIVE_WINDOW:]
-        return [(_pkey_for_seg(ch.segments[k][3], ch.segments[k][2]), ch.segments[k][3])
+        return [(_pkey_for_seg(ch.segments[k][3], ch.segments[k][2], ch.slug),
+                 ch.segments[k][3])
                 for k in keys if k in ch.segments]
 
 
@@ -1140,8 +1157,20 @@ def _rewrite_bk(pl, ch=None):
     return '\n'.join(out) + '\n'
 
 
-def _seg_headers():
-    return {'User-Agent': UA, 'Referer': 'https://tv.cctv.com/'}
+def _seg_headers(url=None):
+    """分片请求头。**两条链路的要求相反**(均实测)：
+
+    - JCE 主链路(tcloud.cctv.com 等)：**必须带** Referer。不带会被 CDN 降速，
+      实测无 Referer 首片 41.9s vs 带 Referer 27~49 Mbps。
+    - bk 兜底链路(bkoutlivecloud-cdn.ysp.cctv.cn)：**带 Referer 反而更容易 403**，
+      实测 6 轮轮换：带 Referer 成功率 33%，不带 50%。
+      (该链路 403 的主因是分片 token 时效极短，Refresh 后几秒即过期)
+    """
+    h = {'User-Agent': UA}
+    if url and 'bkoutlivecloud' in url:
+        return h                      # bk 链路: 不带 Referer
+    h['Referer'] = 'https://tv.cctv.com/'
+    return h
 
 
 class _SlowConn(Exception):
@@ -1268,7 +1297,7 @@ def _serve_segment(cs, key):
     clean = True      # 整个过程没发生断点重连，才是"完整一片"
     buf = []
     for attempt in range(SEG_MAX_RETRY):
-        hdr = _seg_headers()
+        hdr = _seg_headers(url)
         if offset:
             hdr['Range'] = 'bytes=%d-' % offset
         try:
