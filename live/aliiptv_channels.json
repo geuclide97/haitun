@@ -342,7 +342,7 @@
   "TDMOuMun": {
     "name": "澳门澳视",
     "path": "TDMOuMun",
-    "url": null
+    "url": "https://play-drm.aliiptv.com/live/TDMOuMun.m3u8"
   },
   "LotusTV": {
     "name": "莲花卫视",
@@ -352,7 +352,7 @@
   "AMacau": {
     "name": "澳门 Macau",
     "path": "AMacau",
-    "url": null
+    "url": "https://play-drm.aliiptv.com/live/AMacau.m3u8"
   },
   "nowNews": {
     "name": "NOW 新闻台",

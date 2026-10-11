@@ -131,7 +131,11 @@ https://play-drm.aliiptv.com/live/BBCLifestyle.m3u8
 https://p-drm.aliiptv.com/live/CatchPlay.m3u8
 #EXTINF:-1,MOMO 亲子台
 https://p-drm.aliiptv.com/live/momomod.m3u8
+#EXTINF:-1,澳门澳视
+https://play-drm.aliiptv.com/live/TDMOuMun.m3u8
 #EXTINF:-1,莲花卫视
 https://play-drm.aliiptv.com/live/LotusTV.m3u8
+#EXTINF:-1,澳门 Macau
+https://play-drm.aliiptv.com/live/AMacau.m3u8
 #EXTINF:-1,NOW 新闻台
 https://play-drm.aliiptv.com/live/nowNews.m3u8
