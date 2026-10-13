@@ -331,6 +331,16 @@
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 0
+    },
+    {
+      "key": "半日九九py",
+      "name": "半日九九｜PY",
+      "type": 3,
+      "api": "https://raw.githubusercontent.com/geuclide97/haitun/refs/heads/main/%E5%8D%8A%E6%97%A5%E4%B9%9D%E4%B9%9D.py",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1,
+      "ext": "http://103.217.190.91:19987/app/bn"
     }
   ],
   "lives": [
