@@ -337,6 +337,7 @@
             "name": "粉猪影视 | JAR",
             "type": 3,
             "api": "csp_V7",
+            "jar": "https://raw.githubusercontent.com/geuclide97/haitun/main/csp_full.jar",
             "ext": {
                 "domains": [
                     "https://open-douyin-com-1363079259.cos.ap-guangzhou.myqcloud.com/log",
@@ -357,6 +358,7 @@
             "name": "懒懒视频｜JAR",
             "type": 3,
             "api": "csp_Nangua",
+            "jar": "https://raw.githubusercontent.com/geuclide97/haitun/main/csp_full.jar",
             "ext": {
                 "appId": "522",
                 "verCode": 58,
@@ -383,6 +385,7 @@
             "name": "柚子影视 | JAR",
             "type": 3,
             "api": "csp_V7",
+            "jar": "https://raw.githubusercontent.com/geuclide97/haitun/main/csp_full.jar",
             "ext": {
                 "host": "http://91.110.236.125:38569/",
                 "path": "/nxyz.php/v7",
