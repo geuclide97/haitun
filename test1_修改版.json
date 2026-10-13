@@ -333,15 +333,68 @@
       "filterable": 0
     },
     {
-      "key": "半日九九py",
-      "name": "半日九九｜PY",
-      "type": 3,
-      "api": "https://raw.githubusercontent.com/geuclide97/haitun/refs/heads/main/%E5%8D%8A%E6%97%A5%E4%B9%9D%E4%B9%9D.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1,
-      "ext": "http://103.217.190.91:19987/app/bn"
-    }
+            "key": "粉猪APP",
+            "name": "粉猪影视 | JAR",
+            "type": 3,
+            "api": "csp_V7",
+            "ext": {
+                "domains": [
+                    "https://open-douyin-com-1363079259.cos.ap-guangzhou.myqcloud.com/log",
+                    "https://ads-douyin-com-1363079272.cos.ap-shanghai.myqcloud.com/log"
+                ],
+                "path": "/nfenzhu.php/v7",
+                "signMd5": "d16074f47cceb00256ce9d9519d5a5c1",
+                "apkLength": 56877789,
+                "version": "1.0.4",
+                "versionNumber": "14",
+                "pkId": "com.zitibaohe.jianzhuzigejianli.szxja",
+                "buildTime": "1773893703246",
+                "privateKey": "MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBALIEfbWOggIf6vqMaVycPW6mPc3J8WXpgMCeSnTxMPfEGaXTB788FNIai5792Kb2bgnlhEA/xpxD+4bzIupse8v/RhoMeVxAu1npsrL3uubZFKgZXN2T680aY1a6BhPO0EUN0qeRYqU1ay3Pk9uojYUxBaTidMwdM+Vxdp2mY0TZAgMBAAECgYBrIszNQbD4umDe3TZj6BwIxcAYY9sGbJtyUVGaQ7YmxzxwUistamlVcWhqDXggM9tR1XHcgQV08m0kcJuo3hU6VLYM4pqGU5W4oifT7ABkKvu55NkZtCX0AlF+6CSTfiVissNaN8mT1C2BcdgBBzlh+LRRAoVybh0RjdOsafZMqQJBAOlFOBQGNEiukPj8l0HIb6f45koyar4+2YcJjHeHHs8dbF2vegxGvfC9sJPdjSCa0om3zT19mCw4TVyJVFcG858CQQDDXQZqyoNG9i71nX7f1ca7IxKc3uHQmiq0WhSoHX9VZOBl2Kj2cryCmg8XzAtfNfHy4MpEuIzMuti4xCXSc7SHAkEAqej5R9ydCLPedP3HTusoKTlqxHCkv54X4/xYjFenYUUVQcgnJfoBL/F7RLkDqtQatqVioX9x8AOylcyR2jH+EQJATf5xdWjsCAR4su3xnQMHl+Zko+QHWvRxYBcmcAd2smzXeVGKAvnDcJB4vhNj5trugPxlRBI5g/KEWx9TyjUPOQJBAK9T1LCqL3PiQvO6TCFmfN8xvBZF2GHvTTc+8MmhnLgG3Nw+LTpSjO0xWVysD1wcFC0MYRx8eVN0SFjJ1rMnjr0="
+            }
+        },
+     {
+            "key": "懒懒视频APP",
+            "name": "懒懒视频｜JAR",
+            "type": 3,
+            "api": "csp_Nangua",
+            "ext": {
+                "appId": "522",
+                "verCode": 58,
+                "verName": "2.4.21",
+                "pkg": "com.lanlanys.app",
+                "appKey": "dec99f2e3071ece8c7aa5b2fd5800a6f",
+                "appSecret": "d686e49b39c996326bfe7b5f28846bb8",
+                "soMd5": "99b9e59d555d4bdb5c7adf14c7f901e6",
+                "apkMd5": "78c25ff2caeb04f9199303e01d039eb6",
+                "pkgMd5": "4f7f5abdc826f5e62164fb0d0af1a9b1",
+                "signMd5": "9007968b9871d31ce96ed812d1128f0d",
+                "host": [
+                    "https://llsp1.oss-cn-hangzhou.aliyuncs.com/llsp20250605.json",
+                    "https://llsp-1330823543.cos.ap-guangzhou.myqcloud.com/llsp20250605.json"
+                ],
+                "newHost": "http://118.31.73.148:9981",
+                "bizHost": "http://llsp3.terribly.cn",
+                "publicKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqAp1r0KfdEbfAATZXqWMQdEHCfeMdsI7gegO2CtQgzJ5UcXHtdnRUnWd8uKHd5p1jB8ndpTmZEv6BpODgYVLOqAjpO44Z1j6WJVXZ0h19zdjyzzOqhBkEmmKPcQiF+LYqjE/0t0xdNoxgxDBQXyK1PPfmQzfmhhlacQnStL181oCRimZhwEjjha4sqnjmMJTg6JBf6zj5o2btutVT8NUMMZRSmLXqMoDj6oTJapkStlRynihNKn9AiCyozUa6VOmrlZZEnL4yjIgBqYCIS7UAyWE38HeBj7OAEAn7IBrnn1Qrw9u0J2L3Fd40zdHcmBYZa6OF05GNpR1SVlmQtL/QwIDAQAB",
+                "privateKey": "MIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQCN9LrnN2+FFW9oTw5ySIQxClbNZyPQyXyueQmsJw9PELWamIvyrVDhsi2862Da83nXRwjzcBsuT3fSq4BETKfRpsOrI3xprN6HyB+aALoYJbdMt5p3liUeyaw9WNxGZ2VhJ+st6ThGNikKRinFgPkOKaocZgefK7MuKI/EJKrj/FFB1WUE1I1/TT5bkIFMmjc8dszKyqxNdDaRgNTNP1Xou0s/tRCgKpmc503wf2h46F94YK6tpbHvYKouCCKps5ieUu+eWsXZmLRfiM0iZQcD0K5wcbrMvWcS/KmElkWPsCOwErpd/EDgeIbVKtsoHPewG8fOta75iCcb8/J56VbZAgMBAAECggEBAI2+8WIvWIvq+3OMfUBgaJ8PU92GP50blAQjmCTuW7r3VF8qM5P+u+ShpkoePnhi5iawJ5/tMTbs4xjZZxrL8EbH3lnk9TYQB6RNkECWuTujbYSNURBYPHihp/sZ39ntJK3+zjbpyedR7Wj05oDwZ8BcmiABQVsOp7xPhD623m0G3wSYtv1bIeCc+vP8pc1kauCPXl5ZyNCUN6XZKH1mvRkGd+VP9hCYr5LOsPVvn3JM8yF5HUJbxltzZVU/m9WcN9D3lcJ9pqpKBd99G1l5zsN+U23+4VvwX8Qhj4ZkNlMCaNndj+6PvhPGMp4+cCpt94I3xh/OqjdrUAd6jnZpioECgYEA709jQ+yFCobRPKzT/PT6KsqVIJJn0FTMXVc1VP5Sn3t5NTQ+iLzOxQRcO1aTNFVgNKhIgsVnVlGh+1Oa2Zor3vXr1eQBjHCZ2zOH+2QdZbRk4GXoOsZ0d203H189SBCTVj20Zd8mL5csBvihIsMjKZ6R62k/mEyOLD+IVuh+axMCgYEAl9sxrVbU1bvGYgHkGWV7BkqYsezOXR65F3eRq8jbNV0YdYN7rnFCStllIJsMCzJBSs2rBD3lcY6/Tk2ThlFIVHVEhgjjRAUIrLHQBJrFKCSusDMGX39Ekk5DZa+5JNak5J7Ikon6klYtDa1G8PFQTJDKTDfQLm/NgryVFS4Np+MCgYEAljLAfcg8NEAroSZkIvbq8OKXOItLRxGB9u+eVIsO9nP7vi3dNdsy96rl7IRI/ea77DDW2eTmF+JChUiS/xJpiJXXADcL1cZyeobcSScr4EKZsdGkMQeP38kXeMRA5TMqFk3CJNIq2GHMS0/Pas8JCb0xnow/UupxrUnu24UumysCgYBKjYuLDVk6gZC45zLEISVQBmmG2LrLztySH9q9msO8JDNw5hdfoi0osChM5LH6ATc68VQnpfeyU6GqYL2vsNIw3M3CfDSPXWVP25BD4nQu7CtzR+m2ErZomdHO54GfC14y+51/DAyfsX02/L4aZm7E2ETpPHGRisQ7jjgnCNAdfwKBgQDSVzfLvsDi2UqbTjyEIeVYPfgm3Owo0fh79rKvinAainQHabVkAezx+RwiJdWeor/08WiyDjFZC86hJOH8gSMLZ2yJw6EVgHqLTvJ+nkYbk0LzvS2gS2h9lDnqOkkKGZBc5l8k/ScCytcDz3WUFEC2TV2CXDj89H14699s1SjpSw=="
+            }
+        },
+     {
+            "key": "柚子",
+            "name": "柚子影视 | JAR",
+            "type": 3,
+            "api": "csp_V7",
+            "ext": {
+                "host": "http://91.110.236.125:38569/",
+                "path": "/nxyz.php/v7",
+                "signMd5": "b2648f5d9ca7f140fdb8200ce8099576",
+                "apkLength": 53432529,
+                "version": "5.0.3",
+                "versionNumber": "103",
+                "pkId": "com.handytools.csbrr.xyza",
+                "buildTime": "1774111935068",
+                "privateKey": "MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAO9omsi+ys7fmBH3w1d0DfvRAQlj0wLB1BI3Xsb9WSiu4lEc1Me+XubnzTxaQPCBbnuZURerRrO981n9GhsQkDcWmtW+X1mpCllOWt8bbnWwKPsHqemRFxncDWE/d0nA9yrZn6nLVy/J7DJ3cVJlIs9bNLArqEiR8KVrAf1PNSLXAgMBAAECgYBGPn3z2q8s5cP7uaOSHFYiBZ/1PlniXDa6JY7ked9YJX/35qqz9LJps6evRpf5OTDOiRyXAkUbZedqBu5K9KArSGVyxp/Vym4b0siEVeM8qq9Gbf74lHPH+L+X/NmXemydwZHR1lU9PiLJVMsh8o6aAazkB8ijZcsNMyYZUSH36QJBAPvHq511Uz45lx5BtVSZClcUnqPRFSmNnRdjATikDzFTObemnGJU3eL/7VIPWtjEj9LvGP/WyX6gyo1zKc8BRtUCQQDza9oFnSmMHPkvrll/zMxcy3FeOTW0hctBhdIMbBmjJJyhlfTmBOvxwm8I91F05ydkSZ1yLuLhAjLxbjqs2fD7AkB/KOHQvW+UTqu22ULGfiCNyFkyrSc9/EqphBQa0ijmJX1R9nCm7Ou/eLgYKK8eKW/l/WGn3IeZT4XdGJu185QdAkBthqmivQRktuSoP5qlllCdsCxiaPtxLoI2CTBpxnoCngab7g0zMiO3s/Sh5CYSo69lwHnHVrFe7M5fM2nTPHzhAkEAiJETUvYFwCVKNGTYMzUg7v3QblqYXB+IhzcU37sHZOn6a46V5eJDadavIvuEmoxJHWTybi+1ZkN7LeUUg4ylCw=="
+            }
+        
   ],
   "lives": [
     {
