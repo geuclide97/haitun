@@ -89,8 +89,6 @@ https://play-drm.aliiptv.com/live/cinemax.m3u8
 https://play-drm.aliiptv.com/live/wldy.m3u8
 #EXTINF:-1 group-title="电影(海外)",CatchPlay 电影台
 https://p-drm.aliiptv.com/live/CatchPlay.m3u8
-#EXTINF:-1 group-title="影视(海外)",東森戲劇
-https://play-drm.aliiptv.com/live/dsxj.m3u8
 #EXTINF:-1 group-title="影视(海外)",Warner TV 
 https://play-drm.aliiptv.com/live/warnertv.m3u8
 #EXTINF:-1 group-title="体育(海外)",纬来体育
