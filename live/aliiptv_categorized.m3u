@@ -81,6 +81,10 @@ https://play-drm.aliiptv.com/live/dsdy.m3u8
 https://play-drm.aliiptv.com/live/hbotw.m3u8
 #EXTINF:-1 group-title="电影(海外)",龍翔時代
 https://play-drm.aliiptv.com/live/lstime.m3u8
+#EXTINF:-1 group-title="电影(海外)",Now 爆谷台
+https://p-drm.aliiptv.com/live/nowbg.m3u8
+#EXTINF:-1 group-title="电影(海外)",NOW 星影台
+https://play-drm.aliiptv.com/live/bgxy.m3u8
 #EXTINF:-1 group-title="电影(海外)",ROCK 动作电影
 https://play-drm.aliiptv.com/live/ROCKAction.m3u8
 #EXTINF:-1 group-title="电影(海外)",CINEMAX
