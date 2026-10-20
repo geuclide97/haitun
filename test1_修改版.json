@@ -468,8 +468,9 @@
     },
     {
       "name": "测试央视频",
-      "api": "https://ysp.999.team/ysp-live-latest.py",
-      "url": "ysp://all"
+      "type": 0,
+      "playerType": 1,
+      "url": "https://ysp-live-proxy-56281.app.workbuddy.host/all.m3u?sharecode=NQXW53OQLJ"
     }
   ],
   "warningText": "本配置仅供学习交流，请勿用于商业用途。",
