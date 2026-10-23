@@ -7,11 +7,14 @@
       "key": "看剧ai",
       "name": "看剧ai",
       "type": 3,
-      "api": "https://raw.githubusercontent.com/geuclide97/haitun/main/%E7%9C%8B%E5%89%A7AI19.py",
+      "api": "https://raw.githubusercontent.com/geuclide97/zjys9-py/main/%E7%9C%8B%E5%89%A7ai.js",
       "changeable": 0,
       "searchable": 1,
       "quickSearch": 1,
-      "filterable": 0
+      "filterable": 0,
+      "ext": {
+        "cookie": "ai_movie_home_address_visited_v1=1; ai_movie_session=ums_ppvr33aX19WMOaww6ywOwjXWDE4kg_cIRON4zjdlmmE"
+      }
     },
     {
       "key": "SA视频",
