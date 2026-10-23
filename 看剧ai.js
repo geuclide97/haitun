@@ -172,8 +172,11 @@ async function init(ext) {
             mylog('拉取 cookie 链接失败:', e);
         }
     }
+    mylog('DEBUG ext typeof:', typeof ext, '| ext raw:', (typeof ext === 'string' ? ext : JSON.stringify(ext)).slice(0, 260));
+    // fongmi 传入 ext 时会把空格 URL 编码成 %20，污染 cookie 名(如 %20ai_movie_session)导致服务器认不出登录态
+    if (cookie.indexOf('%20') >= 0) cookie = cookie.replace(/%20/g, ' ');
     CK = cookie;
-    mylog('CK length:', CK.length, 'head:', CK.slice(0, 30));
+    mylog('CK length:', CK.length, 'head:', CK.slice(0, 30), '| pct20:', CK.indexOf('%20'));
     // === 自测:验证带 cookie 的签名请求是否真的把 cookie 传到服务器 ===
     try {
         let quotaRes = await requestWithSign(`${baseUrl}/v1/users/me/quota`);
