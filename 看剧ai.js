@@ -94,7 +94,7 @@ async function requestWithSign(urlStr, options = {}, needSign = true) {
     };
     // cookie 只在非空时发（空 cookie 会被网关误判）
     if (CK) {
-        reqHeaders['cookie'] = CK;
+        reqHeaders['Cookie'] = CK;
     }
 
     let finalOptions = {
