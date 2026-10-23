@@ -1,6 +1,4 @@
 #EXTM3U
-#EXTINF:-1 group-title="央視(海外)",CCTV-1 綜合
-https://p-drm.aliiptv.com/live/cctv1.m3u8
 #EXTINF:-1 group-title="央視(海外)",CCTV-2 财经
 https://p-drm.aliiptv.com/live/cctv2.m3u8
 #EXTINF:-1 group-title="央視(海外)",CCTV-3 综艺
@@ -45,8 +43,6 @@ https://p-drm.aliiptv.com/live/dongfang.m3u8
 https://p-drm.aliiptv.com/live/channelnewsasia.m3u8
 #EXTINF:-1 group-title="新闻(海外)",TVB无线新闻
 https://p-drm.aliiptv.com/live/tvbNews.m3u8
-#EXTINF:-1 group-title="新闻(海外)",凤凰卫视中文台
-https://play-drm.aliiptv.com/live/HDPhxChinese.m3u8
 #EXTINF:-1 group-title="新闻(海外)",凤凰卫视资讯台
 https://play-drm.aliiptv.com/live/HDPhxInfonews.m3u8
 #EXTINF:-1 group-title="新闻(海外)",凤凰卫视香港台

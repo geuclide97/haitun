@@ -1,6 +1,4 @@
 #EXTM3U
-#EXTINF:-1,CCTV-1 綜合
-https://p-drm.aliiptv.com/live/cctv1.m3u8
 #EXTINF:-1,CCTV-2 财经
 https://p-drm.aliiptv.com/live/cctv2.m3u8
 #EXTINF:-1,CCTV-3 综艺
@@ -73,8 +71,6 @@ https://play-drm.aliiptv.com/live/chchd.m3u8
 https://play-drm.aliiptv.com/live/chcaction.m3u8
 #EXTINF:-1,CHC家庭影院
 https://play-drm.aliiptv.com/live/CHCHomeTheater.m3u8
-#EXTINF:-1,凤凰卫视中文台
-https://play-drm.aliiptv.com/live/HDPhxChinese.m3u8
 #EXTINF:-1,凤凰卫视资讯台
 https://play-drm.aliiptv.com/live/HDPhxInfonews.m3u8
 #EXTINF:-1,凤凰卫视香港台
