@@ -172,6 +172,13 @@ async function init(ext) {
     }
     CK = cookie;
     mylog('CK length:', CK.length, 'head:', CK.slice(0, 30));
+    // === 自测:验证带 cookie 的签名请求是否真的把 cookie 传到服务器 ===
+    try {
+        let quotaRes = await requestWithSign(`${baseUrl}/v1/users/me/quota`);
+        mylog('SELF-TEST quota statusCode:', quotaRes && quotaRes.statusCode, 'state:', quotaRes && quotaRes.state, 'msg:', quotaRes && quotaRes.message, 'raw:', JSON.stringify(quotaRes).slice(0, 400));
+    } catch (e) {
+        mylog('SELF-TEST quota error:', e.message);
+    }
     return JSON.stringify({ cookie: CK, cookieLen: CK.length });
 }
 
