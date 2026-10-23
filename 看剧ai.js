@@ -109,6 +109,7 @@ async function requestWithSign(urlStr, options = {}, needSign = true) {
         delete finalOptions.data;
     }
 
+    mylog('DEBUG headers keys:', Object.keys(finalOptions.headers || {}).join(','), '| cookie len:', (finalOptions.headers && finalOptions.headers.cookie) ? finalOptions.headers.cookie.length : -1);
     let res = await http(urlStr, finalOptions);
     return typeof res.content === 'string' ? JSON.parse(res.content) : res.content;
 }
