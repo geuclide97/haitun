@@ -181,6 +181,17 @@ async function init(ext) {
     } catch (e) {
         mylog('SELF-TEST quota error:', e.message);
     }
+    // === 回显测试：确认 fongmi http 桥接是否把 cookie 发到服务器 ===
+    try {
+        let echoRes = await http('https://httpbin.org/headers', {
+            method: 'GET',
+            headers: { 'Cookie': CK, 'X-Test-Echo': 'hello123' }
+        });
+        let ec = (echoRes && typeof echoRes.content === 'string') ? echoRes.content : JSON.stringify(echoRes);
+        mylog('ECHO:', ec.slice(0, 700));
+    } catch (e) {
+        mylog('ECHO error:', e.message);
+    }
     return JSON.stringify({ cookie: CK, cookieLen: CK.length });
 }
 
