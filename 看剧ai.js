@@ -109,8 +109,6 @@ async function requestWithSign(urlStr, options = {}, needSign = true) {
         delete finalOptions.data;
     }
 
-    let hsJson = JSON.stringify(finalOptions.headers || {});
-    mylog('DEBUG json session pos:', hsJson.indexOf('ai_movie_session'), '| json len:', hsJson.length, '| keys:', Object.keys(finalOptions.headers || {}).join(','));
     let res = await http(urlStr, finalOptions);
     return typeof res.content === 'string' ? JSON.parse(res.content) : res.content;
 }
@@ -172,28 +170,16 @@ async function init(ext) {
             mylog('拉取 cookie 链接失败:', e);
         }
     }
-    mylog('DEBUG ext typeof:', typeof ext, '| ext raw:', (typeof ext === 'string' ? ext : JSON.stringify(ext)).slice(0, 260));
-    // fongmi 传入 ext 时会把空格 URL 编码成 %20，污染 cookie 名(如 %20ai_movie_session)导致服务器认不出登录态
+    // fongmi 传入 ext 时会把空格 URL 编码成 %20，污染 cookie 名(如 %20ai_movie_session)导致服务器认不出登录态，这里还原成空格
     if (cookie.indexOf('%20') >= 0) cookie = cookie.replace(/%20/g, ' ');
     CK = cookie;
-    mylog('CK length:', CK.length, 'head:', CK.slice(0, 30), '| pct20:', CK.indexOf('%20'));
-    // === 自测:验证带 cookie 的签名请求是否真的把 cookie 传到服务器 ===
+    mylog('CK length:', CK.length);
+    // 登录自测（仅日志提示，不影响正常使用）
     try {
         let quotaRes = await requestWithSign(`${baseUrl}/v1/users/me/quota`);
-        mylog('SELF-TEST quota statusCode:', quotaRes && quotaRes.statusCode, 'state:', quotaRes && quotaRes.state, 'msg:', quotaRes && quotaRes.message, 'raw:', JSON.stringify(quotaRes).slice(0, 400));
+        mylog('登录自测:', (quotaRes && quotaRes.role) ? ('OK ' + quotaRes.role + ' ' + (quotaRes.level_title || '')) : ('FAIL ' + (quotaRes && quotaRes.message)));
     } catch (e) {
-        mylog('SELF-TEST quota error:', e.message);
-    }
-    // === 回显测试：确认 fongmi http 桥接是否把 cookie 发到服务器 ===
-    try {
-        let echoRes = await http('https://httpbin.org/headers', {
-            method: 'GET',
-            headers: { 'Cookie': CK, 'X-Test-Echo': 'hello123' }
-        });
-        let ec = (echoRes && typeof echoRes.content === 'string') ? echoRes.content : JSON.stringify(echoRes);
-        mylog('ECHO:', ec.slice(0, 700));
-    } catch (e) {
-        mylog('ECHO error:', e.message);
+        mylog('登录自测异常:', e.message);
     }
     return JSON.stringify({ cookie: CK, cookieLen: CK.length });
 }
