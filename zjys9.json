@@ -19,6 +19,15 @@
       "filterable": 1
     },
     {
+      "key": "4K影视",
+      "name": "🐬4K影视.py",
+      "type": 3,
+      "api": "https://raw.githubusercontent.com/geuclide97/zjys9-py/main/4K%E5%BD%B1%E8%A7%86.py",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1
+    },
+    {
       "key": "Freeok",
       "name": "🐬Freeok.py",
       "type": 3,
