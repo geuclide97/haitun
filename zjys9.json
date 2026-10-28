@@ -361,6 +361,15 @@
       "filterable": 1
     },
     {
+      "key": "特狗影院",
+      "name": "🐬特狗影院.py",
+      "type": 3,
+      "api": "https://raw.githubusercontent.com/geuclide97/zjys9-py/main/%E7%89%B9%E7%8B%97%E5%BD%B1%E9%99%A2.py",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1
+    },
+    {
       "key": "猎手",
       "name": "🐬猎手.py",
       "type": 3,
@@ -388,10 +397,10 @@
       "filterable": 1
     },
     {
-      "key": "红果短剧",
-      "name": "🐬红果短剧.py",
+      "key": "红果",
+      "name": "🐬红果.py",
       "type": 3,
-      "api": "https://raw.githubusercontent.com/geuclide97/zjys9-py/main/%E7%BA%A2%E6%9E%9C%E7%9F%AD%E5%89%A7.py",
+      "api": "https://raw.githubusercontent.com/geuclide97/zjys9-py/main/%E7%BA%A2%E6%9E%9C.py",
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 1
@@ -505,6 +514,15 @@
       "filterable": 1
     },
     {
+      "key": "追影",
+      "name": "🐬追影.py",
+      "type": 3,
+      "api": "https://raw.githubusercontent.com/geuclide97/zjys9-py/main/%E8%BF%BD%E5%BD%B1.py",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1
+    },
+    {
       "key": "金牌影视",
       "name": "🐬金牌影视.py",
       "type": 3,
@@ -518,15 +536,6 @@
       "name": "🐬金牌影院.js",
       "type": 3,
       "api": "https://raw.githubusercontent.com/geuclide97/zjys9-py/main/%E9%87%91%E7%89%8C%E5%BD%B1%E9%99%A2.js",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1
-    },
-    {
-      "key": "高清剧迷",
-      "name": "🐬高清剧迷.js",
-      "type": 3,
-      "api": "https://raw.githubusercontent.com/geuclide97/zjys9-py/main/%E9%AB%98%E6%B8%85%E5%89%A7%E8%BF%B7.js",
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 1
