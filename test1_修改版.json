@@ -381,6 +381,56 @@
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 1
+    },
+    {
+      "key": "[4K]云播",
+      "name": "[4K]云播",
+      "type": 3,
+      "api": "https://raw.githubusercontent.com/geuclide97/haitun/main/%5B4K%5D%E4%BA%91%E6%92%AD.py",
+      "changeable": 0,
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1
+    },
+    {
+      "key": "[4K]影探",
+      "name": "[4K]影探",
+      "type": 3,
+      "api": "https://raw.githubusercontent.com/geuclide97/haitun/main/%5B4K%5D%E5%BD%B1%E6%8E%A2.py",
+      "changeable": 0,
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1
+    },
+    {
+      "key": "[4K]片帝",
+      "name": "[4K]片帝",
+      "type": 3,
+      "api": "https://raw.githubusercontent.com/geuclide97/haitun/main/%5B4K%5D%E7%89%87%E5%B8%9D.py",
+      "changeable": 0,
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1
+    },
+    {
+      "key": "[4K]咕噜",
+      "name": "[4K]咕噜",
+      "type": 3,
+      "api": "https://raw.githubusercontent.com/geuclide97/haitun/main/%5B4K%5D%E5%92%95%E5%99%9C.py",
+      "changeable": 0,
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1
+    },
+    {
+      "key": "[4K]河豚",
+      "name": "[4K]河豚",
+      "type": 3,
+      "api": "https://raw.githubusercontent.com/geuclide97/haitun/main/%5B4K%5D%E6%B2%B3%E8%B1%9A.py",
+      "changeable": 0,
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1
     }
   ],
   "lives": [
