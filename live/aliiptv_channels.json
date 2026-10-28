@@ -292,7 +292,7 @@
   "channel5": {
     "name": "CHANNEL 5",
     "path": "channel5",
-    "url": "https://p-drm.aliiptv.com/live/channel5.m3u8"
+    "url": null
   },
   "bgxy": {
     "name": "NOW 星影台",
