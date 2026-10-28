@@ -199,6 +199,15 @@
       "filterable": 1
     },
     {
+      "key": "yt4K",
+      "name": "🐬yt4K.py",
+      "type": 3,
+      "api": "https://raw.githubusercontent.com/geuclide97/zjys9-py/main/yt4K.py",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1
+    },
+    {
       "key": "人人电影",
       "name": "🐬人人电影.js",
       "type": 3,
