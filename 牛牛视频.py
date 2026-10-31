@@ -154,12 +154,11 @@ _SAFE = "_-!.~'()*-![.:/,%?&="
 
 # ---------------- 内容过滤：屏蔽成人板块 ----------------
 # 成人板块 type_id：6 福利 / 7 传媒 / 8 吃瓜 / 9 午夜 / 10 热舞 / 11 直播 / 13 滴滴 / 14 嗒嗒
-BLOCK_TIDS = {'6', '7', '8', '9', '10', '11', '13', '14'}
-# 搜索结果不返回 type_id，按成人专属关键词对 vod_class 兜底过滤
-_BLOCK_CLASSES = ('麻豆', '果冻', '蜜桃', '精东', '糖心', '天美', '星空', '玩偶',
+BLOCK_TIDS = ['6', '7', '8', '9', '10', '11', '13', '14']
+_BLOCK_CLASSES = ['麻豆', '果冻', '蜜桃', '精东', '糖心', '天美', '星空', '玩偶',
                   '探花', '无码', 'AV', '网黄', '三级', '偷拍', '人妻', '变态',
                   '吃瓜', '福利', '午夜', '嗒嗒', '滴滴', '自拍', '主播', '网红',
-                  '素人', '辣妹', '热舞', '岛国', '传媒')
+                  '素人', '辣妹', '热舞', '岛国', '传媒']
 
 # 三步解析接口表（反编译 /config 所得，player_id -> 解析模板）
 PARSERS = {
@@ -346,7 +345,12 @@ class Spider(object):
         vlist = []
         for v in (r.get("data") or []):
             cls = str(v.get("vod_class") or "")
-            if any(k in cls for k in _BLOCK_CLASSES):   # 成人关键词兜底过滤
+            blocked = 0
+            for k in _BLOCK_CLASSES:
+                if k in cls:
+                    blocked = 1
+                    break
+            if blocked:
                 continue
             vlist.append(self._vod(v))
         return {"list": vlist}
