@@ -298,24 +298,6 @@
       "filterable": 1
     },
     {
-      "key": "枫叶vip",
-      "name": "🐬枫叶vip.py",
-      "type": 3,
-      "api": "https://raw.githubusercontent.com/geuclide97/zjys9-py/main/%E6%9E%AB%E5%8F%B6vip.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1
-    },
-    {
-      "key": "枫叶影院",
-      "name": "🐬枫叶影院.py",
-      "type": 3,
-      "api": "https://raw.githubusercontent.com/geuclide97/zjys9-py/main/%E6%9E%AB%E5%8F%B6%E5%BD%B1%E9%99%A2.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1
-    },
-    {
       "key": "橘汁4K",
       "name": "🐬橘汁4K.py",
       "type": 3,
