@@ -262,6 +262,15 @@
       "filterable": 1
     },
     {
+      "key": "影探",
+      "name": "🐬影探.py",
+      "type": 3,
+      "api": "https://raw.githubusercontent.com/geuclide97/zjys9-py/main/%E5%BD%B1%E6%8E%A2.py",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1
+    },
+    {
       "key": "抖音短剧",
       "name": "🐬抖音短剧.py",
       "type": 3,
@@ -320,6 +329,15 @@
       "name": "🐬永乐视频.py",
       "type": 3,
       "api": "https://raw.githubusercontent.com/geuclide97/zjys9-py/main/%E6%B0%B8%E4%B9%90%E8%A7%86%E9%A2%91.py",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1
+    },
+    {
+      "key": "河豚",
+      "name": "🐬河豚.py",
+      "type": 3,
+      "api": "https://raw.githubusercontent.com/geuclide97/zjys9-py/main/%E6%B2%B3%E8%B1%9A.py",
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 1
