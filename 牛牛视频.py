@@ -23,6 +23,7 @@
   3. /types 不可达或返回空时回退静态分类，homeContent 不再返回空 class（TVBox 空白页）
   4. 请求加总时间预算，避免多域名重试把壳内加载拖到超时
   5. AES 逆列混淆改查表，降低手机端解密耗时
+  6. 按用户要求追加屏蔽 12 AI短剧（分类/首页/搜索/详情/断网兜底全部生效）
 """
 import base64
 import json
@@ -171,17 +172,18 @@ CFG_KEY = b"@@bull!!!video$$"
 # Android Uri.encode 保留集（unreserved + 自定义 allow）
 _SAFE = "_-!.~'()*-![.:/,%?&="
 
-# ---------------- 内容过滤：屏蔽成人板块 ----------------
-# 成人板块 type_id：6 福利 / 7 传媒 / 8 吃瓜 / 9 午夜 / 10 热舞 / 11 直播 / 13 滴滴 / 14 嗒嗒
-BLOCK_TIDS = ['6', '7', '8', '9', '10', '11', '13', '14']
+# ---------------- 内容过滤：屏蔽成人板块及 AI 短剧 ----------------
+# /types 实测映射：6 福利 / 9 午夜 / 10 热舞 / 11 直播 / 7 传媒 / 8 吃瓜 / 13 滴滴 / 14 嗒嗒
+# 按用户要求追加屏蔽 12 AI短剧；保留 1 电影 / 2 剧集 / 3 综艺 / 4 动漫 / 5 短剧
+BLOCK_TIDS = ['6', '7', '8', '9', '10', '11', '12', '13', '14']
 _BLOCK_CLASSES = ['麻豆', '果冻', '蜜桃', '精东', '糖心', '天美', '星空', '玩偶',
                   '探花', '无码', 'AV', '网黄', '三级', '偷拍', '人妻', '变态',
                   '吃瓜', '福利', '午夜', '嗒嗒', '滴滴', '自拍', '主播', '网红',
-                  '素人', '辣妹', '热舞', '岛国', '传媒']
+                  '素人', '辣妹', '热舞', '岛国', '传媒', 'AI短剧']
 
 
 def _is_blocked(cls):
-    """按成人专属关键词判断分类字符串是否应屏蔽（保守语法，兼容精简解释器）"""
+    """按屏蔽关键词判断分类字符串是否应过滤（保守语法，兼容精简解释器）"""
     text = str(cls or "")
     for k in _BLOCK_CLASSES:
         if k in text:
@@ -358,14 +360,13 @@ try:
 except Exception:
     _BaseSpider = object
 
-# 接口不可达时的静态分类（只含正常板块，绝不含成人分类）
+# 接口不可达时的静态分类（只含保留板块，不含成人板块与 AI 短剧）
 FALLBACK_CLASSES = [
     {"type_id": "1", "type_name": "电影"},
     {"type_id": "2", "type_name": "剧集"},
     {"type_id": "3", "type_name": "综艺"},
     {"type_id": "4", "type_name": "动漫"},
     {"type_id": "5", "type_name": "短剧"},
-    {"type_id": "12", "type_name": "AI短剧"},
 ]
 
 
@@ -422,7 +423,7 @@ class Spider(_BaseSpider):
         classes = []
         for t in data:
             tid = str(t.get("type_id"))
-            if tid in BLOCK_TIDS:      # 屏蔽成人板块
+            if tid in BLOCK_TIDS:      # 屏蔽不保留板块
                 continue
             name = t.get("type_name") or tid
             classes.append({"type_id": tid, "type_name": name})
@@ -463,7 +464,7 @@ class Spider(_BaseSpider):
 
     # ---------------- 分类 ----------------
     def categoryContent(self, tid, pg, filter, extend):
-        if str(tid) in BLOCK_TIDS:      # 屏蔽成人板块：直接返回空列表
+        if str(tid) in BLOCK_TIDS:      # 屏蔽不保留板块：直接返回空列表
             return {"list": [], "page": int(pg), "pagecount": 1, "limit": 0, "total": 0}
         ext = extend or {}
         q = "type_id=%s&page=%s" % (tid, pg)
@@ -501,7 +502,7 @@ class Spider(_BaseSpider):
             return {"list": []}
         if not d:
             return {"list": []}
-        # 兜底：即便通过 vod_id 直达，也不输出成人分类的详情
+        # 兜底：即便通过 vod_id 直达，也不输出已屏蔽分类的详情
         if (str(d.get("type_id") or "") in BLOCK_TIDS
                 or _is_blocked(d.get("vod_class"))):
             return {"list": []}
