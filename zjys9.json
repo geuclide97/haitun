@@ -262,10 +262,10 @@
       "filterable": 1
     },
     {
-      "key": "影探",
-      "name": "🐬影探.py",
+      "key": "影探聚合",
+      "name": "🐬影探聚合.py",
       "type": 3,
-      "api": "https://raw.githubusercontent.com/geuclide97/zjys9-py/main/%E5%BD%B1%E6%8E%A2.py",
+      "api": "https://raw.githubusercontent.com/geuclide97/zjys9-py/main/%E5%BD%B1%E6%8E%A2%E8%81%9A%E5%90%88.py",
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 1
