@@ -447,7 +447,11 @@
       "searchable": 2,
       "quickSearch": 0,
       "filterable": 1,
-      "jar": "https://zakatg.web.zaka.live/zaka-tg.jar?v=110"
+      "jar": "https://zakatg.web.zaka.live/zaka-tg.jar?v=110",
+      "ext": {
+        "mirror": "https://tg.i-c-a.su",
+        "budgetMs": 9000
+      }
     }
   ],
   "lives": [
