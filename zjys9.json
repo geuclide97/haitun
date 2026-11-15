@@ -289,15 +289,6 @@
       "filterable": 1
     },
     {
-      "key": "文才影视",
-      "name": "🐬文才影视.py",
-      "type": 3,
-      "api": "https://raw.githubusercontent.com/geuclide97/zjys9-py/main/%E6%96%87%E6%89%8D%E5%BD%B1%E8%A7%86.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1
-    },
-    {
       "key": "星河影视",
       "name": "🐬星河影视.py",
       "type": 3,
@@ -325,24 +316,6 @@
       "filterable": 1
     },
     {
-      "key": "永乐视频",
-      "name": "🐬永乐视频.js",
-      "type": 3,
-      "api": "https://raw.githubusercontent.com/geuclide97/zjys9-py/main/%E6%B0%B8%E4%B9%90%E8%A7%86%E9%A2%91.js",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1
-    },
-    {
-      "key": "永乐视频",
-      "name": "🐬永乐视频.py",
-      "type": 3,
-      "api": "https://raw.githubusercontent.com/geuclide97/zjys9-py/main/%E6%B0%B8%E4%B9%90%E8%A7%86%E9%A2%91.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1
-    },
-    {
       "key": "河豚",
       "name": "🐬河豚.py",
       "type": 3,
@@ -356,15 +329,6 @@
       "name": "🐬泥巴影视.py",
       "type": 3,
       "api": "https://raw.githubusercontent.com/geuclide97/zjys9-py/main/%E6%B3%A5%E5%B7%B4%E5%BD%B1%E8%A7%86.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1
-    },
-    {
-      "key": "火云",
-      "name": "🐬火云.js",
-      "type": 3,
-      "api": "https://raw.githubusercontent.com/geuclide97/zjys9-py/main/%E7%81%AB%E4%BA%91.js",
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 1
@@ -487,15 +451,6 @@
       "filterable": 1
     },
     {
-      "key": "荐片",
-      "name": "🐬荐片.js",
-      "type": 3,
-      "api": "https://raw.githubusercontent.com/geuclide97/zjys9-py/main/%E8%8D%90%E7%89%87.js",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1
-    },
-    {
       "key": "莫小影",
       "name": "🐬莫小影.py",
       "type": 3,
@@ -509,15 +464,6 @@
       "name": "🐬西饭短剧.py",
       "type": 3,
       "api": "https://raw.githubusercontent.com/geuclide97/zjys9-py/main/%E8%A5%BF%E9%A5%AD%E7%9F%AD%E5%89%A7.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1
-    },
-    {
-      "key": "观影",
-      "name": "🐬观影.py",
-      "type": 3,
-      "api": "https://raw.githubusercontent.com/geuclide97/zjys9-py/main/%E8%A7%82%E5%BD%B1.py",
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 1
