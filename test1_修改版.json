@@ -438,6 +438,16 @@
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 1
+    },
+    {
+      "key": "ZakaTG",
+      "name": "TG频道",
+      "type": 3,
+      "api": "csp_ZakaTgAllAmns",
+      "searchable": 2,
+      "quickSearch": 0,
+      "filterable": 1,
+      "jar": "https://zakatg.web.zaka.live/zaka-tg.jar?v=110"
     }
   ],
   "lives": [
