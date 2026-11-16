@@ -217,6 +217,15 @@
       "filterable": 1
     },
     {
+      "key": "云帧享",
+      "name": "🐬云帧享.py",
+      "type": 3,
+      "api": "https://raw.githubusercontent.com/geuclide97/zjys9-py/main/%E4%BA%91%E5%B8%A7%E4%BA%AB.py",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1
+    },
+    {
       "key": "人人电影",
       "name": "🐬人人电影.js",
       "type": 3,
