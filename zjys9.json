@@ -118,6 +118,15 @@
       "filterable": 1
     },
     {
+      "key": "gat",
+      "name": "🐬gat.py",
+      "type": 3,
+      "api": "https://raw.githubusercontent.com/geuclide97/zjys9-py/main/gat.py",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1
+    },
+    {
       "key": "get",
       "name": "🐬get.js",
       "type": 3,
