@@ -73,15 +73,6 @@
       "filterable": 1
     },
     {
-      "key": "bili少儿",
-      "name": "🐬bili少儿.py",
-      "type": 3,
-      "api": "https://raw.githubusercontent.com/geuclide97/zjys9-py/main/bili%E5%B0%91%E5%84%BF.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1
-    },
-    {
       "key": "bubu",
       "name": "🐬bubu.py",
       "type": 3,
@@ -100,10 +91,10 @@
       "filterable": 1
     },
     {
-      "key": "duonao",
-      "name": "🐬duonao.py",
+      "key": "dsx",
+      "name": "🐬dsx.py",
       "type": 3,
-      "api": "https://raw.githubusercontent.com/geuclide97/zjys9-py/main/duonao.py",
+      "api": "https://raw.githubusercontent.com/geuclide97/zjys9-py/main/dsx.py",
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 1
@@ -217,6 +208,15 @@
       "filterable": 1
     },
     {
+      "key": "xigua",
+      "name": "🐬xigua.py",
+      "type": 3,
+      "api": "https://raw.githubusercontent.com/geuclide97/zjys9-py/main/xigua.py",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1
+    },
+    {
       "key": "yt4K",
       "name": "🐬yt4K.py",
       "type": 3,
@@ -230,15 +230,6 @@
       "name": "🐬云帧享.py",
       "type": 3,
       "api": "https://raw.githubusercontent.com/geuclide97/zjys9-py/main/%E4%BA%91%E5%B8%A7%E4%BA%AB.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1
-    },
-    {
-      "key": "人人电影",
-      "name": "🐬人人电影.js",
-      "type": 3,
-      "api": "https://raw.githubusercontent.com/geuclide97/zjys9-py/main/%E4%BA%BA%E4%BA%BA%E7%94%B5%E5%BD%B1.js",
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 1
