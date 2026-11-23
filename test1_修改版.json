@@ -438,20 +438,6 @@
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 1
-    },
-    {
-      "key": "ZakaTG",
-      "name": "TG频道",
-      "type": 3,
-      "api": "csp_ZakaTgAllAmns",
-      "searchable": 2,
-      "quickSearch": 0,
-      "filterable": 1,
-      "jar": "https://raw.githubusercontent.com/geuclide97/haitun/main/zaka-tg-dex.jar",
-      "ext": {
-        "mirror": "https://tg.i-c-a.su",
-        "budgetMs": 9000
-      }
     }
   ],
   "lives": [
