@@ -19,15 +19,6 @@
       "filterable": 1
     },
     {
-      "key": "4K影视",
-      "name": "🐬4K影视.py",
-      "type": 3,
-      "api": "https://raw.githubusercontent.com/geuclide97/zjys9-py/main/4K%E5%BD%B1%E8%A7%86.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1
-    },
-    {
       "key": "Freeok",
       "name": "🐬Freeok.py",
       "type": 3,
@@ -217,15 +208,6 @@
       "filterable": 1
     },
     {
-      "key": "yt4K",
-      "name": "🐬yt4K.py",
-      "type": 3,
-      "api": "https://raw.githubusercontent.com/geuclide97/zjys9-py/main/yt4K.py",
-      "searchable": 1,
-      "quickSearch": 1,
-      "filterable": 1
-    },
-    {
       "key": "云帧享",
       "name": "🐬云帧享.py",
       "type": 3,
@@ -352,6 +334,15 @@
       "filterable": 1
     },
     {
+      "key": "片帝",
+      "name": "🐬片帝.py",
+      "type": 3,
+      "api": "https://raw.githubusercontent.com/geuclide97/zjys9-py/main/%E7%89%87%E5%B8%9D.py",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1
+    },
+    {
       "key": "特狗影院",
       "name": "🐬特狗影院.py",
       "type": 3,
@@ -383,6 +374,15 @@
       "name": "🐬短剧聚合.py",
       "type": 3,
       "api": "https://raw.githubusercontent.com/geuclide97/zjys9-py/main/%E7%9F%AD%E5%89%A7%E8%81%9A%E5%90%88.py",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1
+    },
+    {
+      "key": "神探",
+      "name": "🐬神探.py",
+      "type": 3,
+      "api": "https://raw.githubusercontent.com/geuclide97/zjys9-py/main/%E7%A5%9E%E6%8E%A2.py",
       "searchable": 1,
       "quickSearch": 1,
       "filterable": 1
